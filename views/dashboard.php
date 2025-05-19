@@ -127,7 +127,7 @@ if (!array_key_exists($role, $modules)) {
 
     <div class="container">
         <div class="text-center my-4">
-            <h1>Dental Management System</h1>
+            <h1>Dental Hub - DMS</h1>
             <h4>Welcome, <?php echo $name; ?>!</h4>
        
             <div class="d-flex justify-content-end p-3">

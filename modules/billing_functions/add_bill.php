@@ -3,108 +3,183 @@ include '../../includes/header.php';
 include '../../includes/sidebar.php';
 include '../../config/db.php';
 
-// Initialize message
-$message = "";
-
-// Check if the form is submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Sanitize and get form data
-    $nic = $_POST['nic'];
-    $total_amount = $_POST['total_amount'];
-    $discount = $_POST['discount'];
-    $tax = $_POST['tax'];
-    $grand_total = $_POST['grand_total'];
-    $amount_paid = $_POST['amount_paid'];
-    $amount_remaining = $_POST['amount_remaining'];
-    $payment_status = $_POST['payment_status'];
-
-    // Check if NIC exists in patients table
-    $nicCheck = $conn->query("SELECT NIC FROM patients WHERE NIC = '$nic'");
-    if ($nicCheck->num_rows == 0) {
-        $message = "Error: NIC does not exist in the patients table.";
-    } else {
-        // Insert bill
-        $sql = "INSERT INTO bills (NIC, total_amount, discount, tax, grand_total, amount_paid, amount_remaining, payment_status) 
-                VALUES ('$nic', '$total_amount', '$discount', '$tax', '$grand_total', '$amount_paid', '$amount_remaining', '$payment_status')";
-
-        if ($conn->query($sql) === TRUE) {
-            $message = "Bill added successfully!";
-        } else {
-            $message = "Error: " . $conn->error;
-        }
-    }
-}
+// Fetch appointment data
+$appointments = $conn->query("
+    SELECT a.appointment_id, a.appointment_date, a.patient_nic, a.patient_name, a.dentist_code, a.dentist_name
+    FROM appointments a
+    WHERE NOT EXISTS (
+        SELECT 1 FROM bills b 
+        WHERE b.appointment_id = a.appointment_id AND b.appointment_date = a.appointment_date
+    )
+");
 ?>
 
+
+<?php if (isset($_GET['success'])): ?>
+    <div class="alert alert-success">
+        Bill added successfully!
+    </div>
+<?php endif; ?>
+
 <div class="container mt-4">
-    <div class="card shadow-lg p-4">
-        <h2 class="text-center text-primary">Add New Bill</h2>
-
-        <?php if (!empty($message)) { ?>
-            <div class="alert alert-info"><?php echo $message; ?></div>
-        <?php } ?>
-
-        <form method="POST" action="add_bill.php">
+    <div class="card shadow p-4">
+        <h3 class="text-primary text-center">Add Bill</h3>
+        <form action="./insert_bill.php" method="POST">
             <div class="mb-3">
-                <label for="nic" class="form-label">Patient NIC</label>
-                <input type="text" name="nic" id="nic" class="form-control" required>
+                <label for="appointment_select" class="form-label">Select Appointment</label>
+                <select name="appointment_select" id="appointment_select" class="form-select" required>
+                    <option value="" disabled selected>Select appointment</option>
+                    <?php while ($row = $appointments->fetch_assoc()): ?>
+                        <option 
+                            value="<?= $row['appointment_id'] ?>|<?= $row['appointment_date'] ?>"
+                            data-appointment-id="<?= $row['appointment_id'] ?>"
+                            data-appointment-date="<?= $row['appointment_date'] ?>"
+                            data-patient-nic="<?= $row['patient_nic'] ?>"
+                            data-patient-name="<?= $row['patient_name'] ?>"
+                            data-dentist-code="<?= $row['dentist_code'] ?>"
+                            data-dentist-name="<?= $row['dentist_name'] ?>"
+                        >
+                            <?= $row['appointment_id'] ?> - <?= $row['appointment_date'] ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
             </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="appointment_id" class="form-label">Appointment ID</label>
+                    <input type="text" name="appointment_id" id="appointment_id" class="form-control" readonly>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="appointment_date" class="form-label">Appointment Date</label>
+                    <input type="date" name="appointment_date" id="appointment_date" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="patient_nic" class="form-label">Patient NIC</label>
+                    <input type="text" name="patient_nic" id="patient_nic" class="form-control" readonly>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="patient_name" class="form-label">Patient Name</label>
+                    <input type="text" id="patient_name" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="dentist_code" class="form-label">Dentist Code</label>
+                    <input type="text" id="dentist_code" class="form-control" readonly>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="dentist_name" class="form-label">Dentist Name</label>
+                    <input type="text" id="dentist_name" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <textarea name="notes" id="notes" class="form-control" rows="3"></textarea>
+            </div>
+
             <div class="mb-3">
                 <label for="total_amount" class="form-label">Total Amount</label>
                 <input type="number" step="0.01" name="total_amount" id="total_amount" class="form-control" required>
             </div>
+
             <div class="mb-3">
                 <label for="discount" class="form-label">Discount</label>
-                <input type="number" step="0.01" name="discount" id="discount" class="form-control" required>
+                <input type="number" step="0.01" name="discount" id="discount" class="form-control" value="0">
             </div>
+
             <div class="mb-3">
                 <label for="tax" class="form-label">Tax</label>
-                <input type="number" step="0.01" name="tax" id="tax" class="form-control" required>
+                <input type="number" step="0.01" name="tax" id="tax" class="form-control" value="0">
             </div>
+
             <div class="mb-3">
                 <label for="grand_total" class="form-label">Grand Total</label>
-                <input type="number" step="0.01" name="grand_total" id="grand_total" class="form-control" required readonly>
+                <input type="text" name="grand_total" id="grand_total" class="form-control" readonly>
             </div>
+
             <div class="mb-3">
                 <label for="amount_paid" class="form-label">Amount Paid</label>
-                <input type="number" step="0.01" name="amount_paid" id="amount_paid" class="form-control" required>
+                <input type="number" step="0.01" name="amount_paid" id="amount_paid" class="form-control" value="0">
             </div>
+
             <div class="mb-3">
-                <label for="amount_remaining" class="form-label">Amount Remaining</label>
-                <input type="number" step="0.01" name="amount_remaining" id="amount_remaining" class="form-control" readonly>
+                <label for="amount_remaining" class="form-label">Remaining Amount</label>
+                <input type="text" name="amount_remaining" id="amount_remaining" class="form-control" readonly>
             </div>
+
             <div class="mb-3">
                 <label for="payment_status" class="form-label">Payment Status</label>
-                <select name="payment_status" id="payment_status" class="form-control" required>
-                    <option value="Paid">Paid</option>
-                    <option value="Partially Paid">Partially Paid</option>
+                <select name="payment_status" class="form-select" required>
                     <option value="Unpaid">Unpaid</option>
+                    <option value="Partially Paid">Partially Paid</option>
+                    <option value="Paid">Paid</option>
                 </select>
             </div>
 
-            <div class="d-flex justify-content-between">
-                <a href="../billing_management.php" class="btn btn-danger"><i class="bi bi-arrow-left"></i> Back</a>
-                <button type="submit" class="btn btn-success ms-2"><i class="bi bi-check-lg"></i> Add Bill</button>
+            <div class="mb-3">
+                <label for="created_at" class="form-label">Created At</label>
+                <input type="date" name="created_at" id="created_at" class="form-control" required>
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-success">Add Bill</button>
+                <a href="billing_management.php" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const appointmentSelect = document.getElementById('appointment_select');
+    const appointmentIdInput = document.getElementById('appointment_id');
+    const appointmentDateInput = document.getElementById('appointment_date');
+    const patientNicInput = document.getElementById('patient_nic');
+    const patientNameInput = document.getElementById('patient_name');
+    const dentistCodeInput = document.getElementById('dentist_code');
+    const dentistNameInput = document.getElementById('dentist_name');
+
+    const totalAmountInput = document.getElementById('total_amount');
+    const discountInput = document.getElementById('discount');
+    const taxInput = document.getElementById('tax');
+    const grandTotalInput = document.getElementById('grand_total');
+    const amountPaidInput = document.getElementById('amount_paid');
+    const amountRemainingInput = document.getElementById('amount_remaining');
+
+    appointmentSelect.addEventListener('change', function () {
+        const selectedOption = this.selectedOptions[0];
+        appointmentIdInput.value = selectedOption.dataset.appointmentId;
+        appointmentDateInput.value = selectedOption.dataset.appointmentDate;
+        patientNicInput.value = selectedOption.dataset.patientNic;
+        patientNameInput.value = selectedOption.dataset.patientName;
+        dentistCodeInput.value = selectedOption.dataset.dentistCode;
+        dentistNameInput.value = selectedOption.dataset.dentistName;
+    });
+
     function calculateTotals() {
-        const total = parseFloat(document.getElementById('total_amount').value) || 0;
-        const discount = parseFloat(document.getElementById('discount').value) || 0;
-        const tax = parseFloat(document.getElementById('tax').value) || 0;
-        const paid = parseFloat(document.getElementById('amount_paid').value) || 0;
+        const total = parseFloat(totalAmountInput.value || 0);
+        const discount = parseFloat(discountInput.value || 0);
+        const tax = parseFloat(taxInput.value || 0);
+        const paid = parseFloat(amountPaidInput.value || 0);
 
         const grandTotal = total - discount + tax;
-        document.getElementById('grand_total').value = grandTotal.toFixed(2);
-
         const remaining = grandTotal - paid;
-        document.getElementById('amount_remaining').value = remaining.toFixed(2);
+
+        grandTotalInput.value = grandTotal.toFixed(2);
+        amountRemainingInput.value = remaining.toFixed(2);
     }
 
-    document.addEventListener('input', calculateTotals);
+    totalAmountInput.addEventListener('input', calculateTotals);
+    discountInput.addEventListener('input', calculateTotals);
+    taxInput.addEventListener('input', calculateTotals);
+    amountPaidInput.addEventListener('input', calculateTotals);
+});
 </script>
 
 <?php include '../../includes/footer.php'; ?>

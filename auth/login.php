@@ -58,6 +58,10 @@ if (isset($_POST['login'])) {
             border-radius: 5px;
             margin-bottom: 15px;
         }
+
+        h4{
+            color: #67a3b8;
+        }
     </style>
 </head>
 <body>
@@ -65,7 +69,8 @@ if (isset($_POST['login'])) {
         <div class="card">
             <!-- Dental Management System Heading -->
             <div class="text-center mb-4">
-                <h1 class="text-primary">Dental Management System</h1>
+                <h1 class="text-primary">Dental Hub </h1>
+                <h4 >Dental Management System </h4>
             </div>
             
             <!-- Login Form -->
