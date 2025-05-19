@@ -13,11 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $amount_paid = $_POST['amount_paid'];
     $amount_remaining = $_POST['amount_remaining'];
     $payment_status = $_POST['payment_status'];
-    $created_at = $_POST['created_at'];
 
     // Update main lab bill
-    $stmt = $conn->prepare("UPDATE lab_bills SET patient_nic=?, total_amount=?, discount=?, tax=?, grand_total=?, amount_paid=?, amount_remaining=?, payment_status=?, created_at=? WHERE bill_id=?");
-    $stmt->bind_param("sddddddssi", $patient_nic, $total_amount, $discount, $tax, $grand_total, $amount_paid, $amount_remaining, $payment_status, $created_at, $bill_id);
+    $stmt = $conn->prepare("UPDATE lab_bills SET patient_nic=?, total_amount=?, discount=?, tax=?, grand_total=?, amount_paid=?, amount_remaining=?, payment_status=?, created_at=NOW() WHERE bill_id=?");
+    $stmt->bind_param("sddddddsi", $patient_nic, $total_amount, $discount, $tax, $grand_total, $amount_paid, $amount_remaining, $payment_status, $bill_id);
     $stmt->execute();
 
     // Delete old test types

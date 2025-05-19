@@ -3,12 +3,8 @@ include '../../../includes/header.php';
 include '../../../includes/sidebar.php';
 include '../../../config/db.php';
 
-// Fetch appointments and associated patient info
-$appointments = $conn->query("
-    SELECT a.appointment_id, a.appointment_date, p.NIC, p.Fullname
-    FROM appointments a
-    JOIN patients p ON a.patient_nic = p.NIC
-");
+// Fetch patients
+$patients = $conn->query("SELECT NIC, Fullname FROM patients");
 
 // Fetch test types
 $testTypes = $conn->query("SELECT test_type_id, test_name, cost FROM test_types");
@@ -19,28 +15,13 @@ $testTypes = $conn->query("SELECT test_type_id, test_name, cost FROM test_types"
         <h3 class="text-primary text-center">Add Lab Bill</h3>
         <form action="insert_lab_bill.php" method="POST">
             <div class="mb-3">
-                <label for="appointment_id" class="form-label">Appointment (ID - Date - Patient)</label>
-                <select name="appointment_id" id="appointment_id" class="form-select" required>
-                    <option value="" disabled selected>Select appointment</option>
-                    <?php while ($row = $appointments->fetch_assoc()): ?>
-                        <option value="<?= $row['appointment_id'] ?>"
-                            data-nic="<?= $row['NIC'] ?>"
-                            data-fullname="<?= $row['Fullname'] ?>"
-                            data-date="<?= $row['appointment_date'] ?>">
-                            <?= $row['appointment_id'] ?> - <?= $row['appointment_date'] ?> - <?= $row['Fullname'] ?>
-                        </option>
+                <label for="patient_nic" class="form-label">Patient NIC</label>
+                <select name="patient_nic" class="form-select" required>
+                    <option value="" disabled selected>Select patient</option>
+                    <?php while ($row = $patients->fetch_assoc()): ?>
+                        <option value="<?= $row['NIC'] ?>"><?= $row['NIC'] ?> - <?= $row['Fullname'] ?></option>
                     <?php endwhile; ?>
                 </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="patient_nic" class="form-label">Patient NIC</label>
-                <input type="text" name="patient_nic" id="patient_nic" class="form-control" readonly required>
-            </div>
-
-            <div class="mb-3">
-                <label for="patient_name" class="form-label">Patient Name</label>
-                <input type="text" id="patient_name" class="form-control" readonly>
             </div>
 
             <div class="mb-3">
@@ -93,10 +74,6 @@ $testTypes = $conn->query("SELECT test_type_id, test_name, cost FROM test_types"
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label for="created_at" class="form-label">Created At</label>
-                <input type="date" name="created_at" id="created_at" class="form-control" required>
-            </div>
 
             <div class="text-end">
                 <button type="submit" class="btn btn-success">Add Bill</button>
@@ -105,6 +82,12 @@ $testTypes = $conn->query("SELECT test_type_id, test_name, cost FROM test_types"
         </form>
     </div>
 </div>
+
+
+
+
+
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -115,9 +98,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const grandTotalInput = document.getElementById('grand_total');
     const amountPaidInput = document.getElementById('amount_paid');
     const amountRemainingInput = document.getElementById('amount_remaining');
-    const appointmentSelect = document.getElementById('appointment_id');
-    const patientNICInput = document.getElementById('patient_nic');
-    const patientNameInput = document.getElementById('patient_name');
 
     function calculateTotals() {
         let total = 0;
@@ -141,15 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
     discountInput.addEventListener('input', calculateTotals);
     taxInput.addEventListener('input', calculateTotals);
     amountPaidInput.addEventListener('input', calculateTotals);
-
-    appointmentSelect.addEventListener('change', function () {
-        const selected = appointmentSelect.options[appointmentSelect.selectedIndex];
-        const nic = selected.getAttribute('data-nic');
-        const fullname = selected.getAttribute('data-fullname');
-
-        patientNICInput.value = nic || '';
-        patientNameInput.value = fullname || '';
-    });
 });
 </script>
 

@@ -102,10 +102,7 @@ $testTypes = $conn->query("SELECT test_type_id, test_name, cost FROM test_types"
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label for="created_at" class="form-label">Created At</label>
-                <input type="date" name="created_at" id="created_at" class="form-control" value="<?= $bill['created_at'] ?>" required>
-            </div>
+            
 
             <div class="text-end">
                 <button type="submit" class="btn btn-primary">Update Bill</button>

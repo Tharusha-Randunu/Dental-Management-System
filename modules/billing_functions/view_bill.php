@@ -1,27 +1,29 @@
 <?php
-include '../../includes/header.php';  
-include '../../includes/sidebar.php'; 
-include '../../config/db.php';        
+include '../../includes/header.php';
+include '../../includes/sidebar.php';
+include '../../config/db.php';
 
-// Initialize variables
 $bill = null;
 $message = null;
 
-// Check if bill_id is passed
 if (isset($_GET['id']) && !empty($_GET['id'])) {
-    $bill_id = $_GET['id'];
+    $bill_id = intval($_GET['id']);
 
-    // Prepare a secure query to prevent SQL injection
-    $stmt = $conn->prepare("SELECT bill_id, NIC, total_amount, discount, tax, grand_total, amount_paid, amount_remaining, payment_status, created_at FROM bills WHERE bill_id = ?");
+    // Fetch bill and appointment info
+    $stmt = $conn->prepare("
+        SELECT b.*, a.patient_nic, a.patient_name, a.dentist_code, a.dentist_name 
+        FROM bills b 
+        JOIN appointments a ON b.appointment_id = a.appointment_id AND b.appointment_date = a.appointment_date 
+        WHERE b.bill_id = ?
+    ");
     $stmt->bind_param("i", $bill_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Check if bill exists
     if ($result->num_rows > 0) {
         $bill = $result->fetch_assoc();
     } else {
-        $message = "Bill not found!";
+        $message = "Dental bill not found!";
     }
 
     $stmt->close();
@@ -32,11 +34,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
 <div class="container mt-4">
     <div class="card shadow-lg p-4">
-        <h2 class="text-center text-primary">Bill Details</h2>
+        <h2 class="text-center text-primary">Dental Bill Details</h2>
 
         <?php if ($message) { ?>
             <div class="alert alert-warning">
-                <?php echo htmlspecialchars($message); ?>
+                <?= htmlspecialchars($message); ?>
             </div>
         <?php } ?>
 
@@ -48,25 +50,31 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                 </a>
             </div>
 
-            <!-- Bill Information -->
+            <!-- Bill Info Table -->
             <table class="table table-bordered">
                 <tbody>
-                    <tr><th>Bill ID</th><td><?php echo htmlspecialchars($bill['bill_id']); ?></td></tr>
-                    <tr><th>NIC</th><td><?php echo htmlspecialchars($bill['NIC']); ?></td></tr>
-                    <tr><th>Total Amount</th><td><?php echo htmlspecialchars($bill['total_amount']); ?></td></tr>
-                    <tr><th>Discount</th><td><?php echo htmlspecialchars($bill['discount']); ?></td></tr>
-                    <tr><th>Tax</th><td><?php echo htmlspecialchars($bill['tax']); ?></td></tr>
-                    <tr><th>Grand Total</th><td><?php echo htmlspecialchars($bill['grand_total']); ?></td></tr>
-                    <tr><th>Amount Paid</th><td><?php echo htmlspecialchars($bill['amount_paid']); ?></td></tr>
-                    <tr><th>Amount Remaining</th><td><?php echo htmlspecialchars($bill['amount_remaining']); ?></td></tr>
-                    <tr><th>Payment Status</th><td><?php echo htmlspecialchars($bill['payment_status']); ?></td></tr>
-                    <tr><th>Created At</th><td><?php echo htmlspecialchars($bill['created_at']); ?></td></tr>
+                    <tr><th>Bill ID</th><td><?= htmlspecialchars($bill['bill_id']); ?></td></tr>
+                    <tr><th>Appointment ID</th><td><?= htmlspecialchars($bill['appointment_id']); ?></td></tr>
+                    <tr><th>Appointment Date</th><td><?= htmlspecialchars($bill['appointment_date']); ?></td></tr>
+                    <tr><th>Patient NIC</th><td><?= htmlspecialchars($bill['patient_nic']); ?></td></tr>
+                    <tr><th>Patient Name</th><td><?= htmlspecialchars($bill['patient_name']); ?></td></tr>
+                    <tr><th>Dentist Code</th><td><?= htmlspecialchars($bill['dentist_code']); ?></td></tr>
+                    <tr><th>Dentist Name</th><td><?= htmlspecialchars($bill['dentist_name']); ?></td></tr>
+                    <tr><th>Notes</th><td><?= nl2br(htmlspecialchars($bill['notes'])); ?></td></tr>
+                    <tr><th>Total Amount</th><td>Rs. <?= number_format($bill['total_amount'], 2); ?></td></tr>
+                    <tr><th>Discount</th><td>Rs. <?= number_format($bill['discount'], 2); ?></td></tr>
+                    <tr><th>Tax</th><td>Rs. <?= number_format($bill['tax'], 2); ?></td></tr>
+                    <tr><th>Grand Total</th><td>Rs. <?= number_format($bill['grand_total'], 2); ?></td></tr>
+                    <tr><th>Amount Paid</th><td>Rs. <?= number_format($bill['amount_paid'], 2); ?></td></tr>
+                    <tr><th>Amount Remaining</th><td>Rs. <?= number_format($bill['amount_remaining'], 2); ?></td></tr>
+                    <tr><th>Payment Status</th><td><?= htmlspecialchars($bill['payment_status']); ?></td></tr>
+                    <tr><th>Created At</th><td><?= htmlspecialchars($bill['created_at']); ?></td></tr>
                 </tbody>
             </table>
 
             <!-- Print Button -->
             <div class="d-flex justify-content-end mt-4">
-                <a href="generate_pdf.php?id=<?php echo urlencode($bill['bill_id']); ?>" target="_blank" class="btn btn-primary">
+                <a href="generate_pdf.php?id=<?= urlencode($bill['bill_id']); ?>" target="_blank" class="btn btn-primary">
                     <i class="bi bi-printer"></i> Print Bill
                 </a>
             </div>

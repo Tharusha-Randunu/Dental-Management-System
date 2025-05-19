@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $amount_paid = $_POST['amount_paid'];
     $amount_remaining = $_POST['amount_remaining'];
     $payment_status = $_POST['payment_status'];
-    $created_at = $_POST['created_at'];
+    
 
     // Check if bill for this appointment_id and appointment_date already exists
     $check_stmt = $conn->prepare("SELECT COUNT(*) FROM bills WHERE appointment_id = ? AND appointment_date = ?");
@@ -31,11 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    $stmt = $conn->prepare("INSERT INTO bills 
-        (appointment_id, appointment_date, notes, total_amount, discount, tax, grand_total, amount_paid, amount_remaining, payment_status, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+ $stmt = $conn->prepare("INSERT INTO bills 
+    (appointment_id, appointment_date, notes, total_amount, discount, tax, grand_total, amount_paid, amount_remaining, payment_status, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
 
-    $stmt->bind_param("issddddddss", $appointment_id, $appointment_date, $notes, $total_amount, $discount, $tax, $grand_total, $amount_paid, $amount_remaining, $payment_status, $created_at);
+$stmt->bind_param("issdddddds", $appointment_id, $appointment_date, $notes, $total_amount, $discount, $tax, $grand_total, $amount_paid, $amount_remaining, $payment_status);
 
     if ($stmt->execute()) {
         // Success → Redirect with success flag

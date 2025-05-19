@@ -24,7 +24,20 @@ $result = $conn->query($sql);
         Failed to add the bill. Please try again.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+<?php elseif (isset($_GET['updated']) && $_GET['updated'] == 1): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        Bill updated successfully!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php elseif (isset($_GET['update_error']) && $_GET['update_error'] == 1): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        Failed to update the bill. Please try again.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 <?php endif; ?>
+
+
+
 
 <div class="container mt-4">
 <?php if (isset($_GET['msg']) && $_GET['msg'] == 'success'): ?>
@@ -224,8 +237,8 @@ $result = $conn->query($sql);
                         </td>
                         <td><?= $row['created_at'] ?></td>
                         <td>
-                            <a href="view_bill.php?id=<?= $row['bill_id'] ?>" class="btn btn-sm btn-info" title="View"><i class="bi bi-eye"></i></a>
-                            <a href="edit_bill.php?id=<?= $row['bill_id'] ?>" class="btn btn-sm btn-warning" title="Edit"><i class="bi bi-pencil"></i></a>
+                            <a href="billing_functions/view_bill.php?id=<?= $row['bill_id'] ?>" class="btn btn-sm btn-info" title="View"><i class="bi bi-eye"></i></a>
+                            <a href="billing_functions/edit_bill.php?id=<?= $row['bill_id'] ?>" class="btn btn-sm btn-warning" title="Edit"><i class="bi bi-pencil"></i></a>
                             <button class="btn btn-sm btn-danger delete-btn" data-id="<?= $row['bill_id'] ?>" title="Delete"><i class="bi bi-trash"></i></button>
                         </td>
                     </tr>

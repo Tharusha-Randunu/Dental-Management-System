@@ -122,10 +122,6 @@ $appointments = $conn->query("
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label for="created_at" class="form-label">Created At</label>
-                <input type="date" name="created_at" id="created_at" class="form-control" required>
-            </div>
 
             <div class="text-end">
                 <button type="submit" class="btn btn-success">Add Bill</button>

@@ -106,7 +106,7 @@ $result = $conn->query($sql);
     </div>
 </div>
 
-<?php include '../includes/footer.php'; ?>
+
 
 <!-- JavaScript for Searching and Deleting -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -169,3 +169,4 @@ $result = $conn->query($sql);
         });
     </script>
 <?php } ?>
+<?php include '../../../includes/footer.php'; ?>

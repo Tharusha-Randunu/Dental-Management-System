@@ -47,7 +47,7 @@ $test_stmt->close();
 
 // Build PDF HTML content
 $html = '
-<h2 style="text-align: center; color: navy;">Dental Lab Bill</h2>
+<h2 style="text-align: center; color: navy;">Dental Hub - Lab Bill</h2>
 <table border="1" cellspacing="0" cellpadding="10" width="100%">
     <tr><th>Bill ID</th><td>' . $bill['bill_id'] . '</td></tr>
     <tr><th>Patient NIC</th><td>' . $bill['patient_nic'] . '</td></tr>
