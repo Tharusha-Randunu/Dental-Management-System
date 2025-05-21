@@ -221,6 +221,7 @@ $lab_stmt->close();
                         <th>Test Request ID</th>
                         <th>Test Name</th>
                         <th>Notes</th>
+                        <th>View Results</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -230,6 +231,8 @@ $lab_stmt->close();
                             <td><?= htmlspecialchars($test['test_id']) ?></td>
                             <td><?= htmlspecialchars($test['test_name'] ?? 'N/A') ?></td>
                             <td><?= htmlspecialchars($test['notes']) ?></td>
+                            <td><a href="../lab_functions/test_results/view_test_result.php?id=<?= urlencode($test['result_id']) ?>&from=view_patient" class="btn btn-sm btn-primary">View</a></td>
+                       
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -270,8 +273,7 @@ $lab_stmt->close();
                             <td>Rs. <?= number_format($lab_bill['amount_remaining'], 2) ?></td>
                             <td><?= htmlspecialchars($lab_bill['payment_status']) ?></td>
                             <td><?= htmlspecialchars($lab_bill['created_at']) ?></td>
-                            <td><a href="../lab_functions/lab_billing/view_lab_bill.php?id=<?= urlencode($lab_bill['bill_id']) ?>" class="btn btn-sm btn-primary">View</a></td>
-                       
+                            <td><a href="../lab_functions/lab_billing/view_lab_bill.php?id=<?= urlencode($lab_bill['bill_id']) ?>&from=view_patient" class="btn btn-sm btn-primary">View</a></td>
                        
                         </tr>
                     <?php endforeach; ?>

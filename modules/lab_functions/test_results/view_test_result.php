@@ -42,6 +42,16 @@ $filesResult = $stmt->get_result();
     <div class="card shadow p-4">
         <h2 class="text-primary text-center">Test Result Details</h2>
 
+        <?php
+$backUrl = 'test_result_management.php';
+if (isset($_GET['from']) && $_GET['from'] === 'view_patient' && isset($testResult['patient_nic'])) {
+    $backUrl = '../../patient_functions/view_patient.php?nic=' . urlencode($testResult['patient_nic']);
+}
+?>
+<div class="d-flex justify-content-end">
+    <a href="<?= $backUrl ?>" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+
         <div class="mb-3">
             <strong>Test ID:</strong> <?= htmlspecialchars($testResult['test_id']) ?><br>
             <strong>Test Type:</strong> <?= htmlspecialchars($testResult['test_name']) ?><br>
@@ -81,10 +91,16 @@ $filesResult = $stmt->get_result();
             <?php endif; ?>
         </div>
 
-        <div class="d-flex justify-content-end">
-            <a href="test_result_management.php" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
-        </div>
+       
+
+
+            
     </div>
 </div>
 
 <?php include '../../../includes/footer.php'; ?>
+
+
+
+
+
