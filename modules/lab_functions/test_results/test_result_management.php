@@ -89,7 +89,7 @@ $result = $conn->query($sql);
                 <thead class="table-dark text-light">
                     <tr>
                         <th>Result ID</th>
-                        <th>Test ID</th>
+                        <th>Test Request ID</th>
                         <th>Patient NIC</th>
                         <th>Patient Name</th>
                         <th>Notes</th>

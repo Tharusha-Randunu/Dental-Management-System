@@ -6,6 +6,9 @@ include '../../../config/db.php';
 $bill = null;
 $message = null;
 
+// Determine where the user came from
+$redirect_from = isset($_GET['from']) ? $_GET['from'] : 'lab_billing_management'; // default
+
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $bill_id = intval($_GET['id']);
 
@@ -63,7 +66,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         <?php if ($bill) { ?>
             <!-- Back Button -->
             <div class="d-flex justify-content-start mb-3">
-                <a href="lab_billing_management.php" class="btn btn-secondary">
+                <a href="<?= $redirect_from === 'view_patient' 
+                    ? '../../patient_functions/view_patient.php?nic=' . urlencode($bill['patient_nic']) 
+                    : 'lab_billing_management.php'; ?>" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> Back
                 </a>
             </div>
