@@ -5,8 +5,8 @@ include '../../config/db.php';
 
 $nic = $_GET['nic'];
 
-// Fetch user details (added Role column)
-$sql = "SELECT NIC, user_code, Fullname, Address, Contact, Gender, Email, Username, Password, Role FROM users WHERE NIC = '$nic'";
+// Fetch user details (added Role and Profile_Picture columns)
+$sql = "SELECT NIC, user_code, Fullname, Address, Contact, Gender, Email, Username, Password, Role, Profile_Picture FROM users WHERE NIC = '$nic'";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -25,18 +25,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $role = $_POST['role']; // ✅ New role field
+    $role = $_POST['role'];
 
-    // Update user including Role
-    $update_sql = "UPDATE users SET user_code ='$usercode', Fullname = '$fullname', Address = '$address', Contact = '$contact', Gender = '$gender', Email = '$email', Username = '$username', Password = '$password', Role = '$role' WHERE NIC = '$nic'";
+    $update_sql = "UPDATE users SET user_code ='$usercode', Fullname = '$fullname', Address = '$address', Contact = '$contact', Gender = '$gender', Email = '$email', Username = '$username', Password = '$password', Role = '$role'";
+
+    // Handle profile picture upload
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == 0) {
+        $imageData = addslashes(file_get_contents($_FILES['profile_picture']['tmp_name']));
+        $update_sql .= ", Profile_Picture = '$imageData'";
+    }
+
+    $update_sql .= " WHERE NIC = '$nic'";
 
     if ($conn->query($update_sql) === TRUE) {
         echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     var successModal = new bootstrap.Modal(document.getElementById('successModal'));
                     successModal.show();
+                    setTimeout(function(){
+                        window.location.href = '../user_management.php';
+                    }, 2000);
                 });
               </script>";
+
+        $user['user_code'] = $usercode;
+        $user['Fullname'] = $fullname;
+        $user['Address'] = $address;
+        $user['Contact'] = $contact;
+        $user['Gender'] = $gender;
+        $user['Email'] = $email;
+        $user['Username'] = $username;
+        $user['Password'] = $password;
+        $user['Role'] = $role;
+        if (isset($imageData)) {
+            $user['Profile_Picture'] = $imageData;
+        }
     } else {
         echo "<script>alert('Error updating record: " . $conn->error . "');</script>";
     }
@@ -52,26 +75,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php } ?>
 
         <?php if ($result->num_rows > 0) { ?>
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3 text-center">
+                    <?php if (!empty($user['Profile_Picture'])): ?>
+                        <img src="data:image/jpeg;base64,<?php echo base64_encode($user['Profile_Picture']); ?>" alt="Profile Picture" class="rounded-circle" width="150" height="150">
+                    <?php else: ?>
+                        <img src="../../assets/default-avatar.png" alt="No Image" class="rounded-circle" width="150" height="150">
+                    <?php endif; ?>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Upload New Profile Picture</label>
+                    <input type="file" name="profile_picture" class="form-control">
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label">NIC</label>
                     <input type="text" class="form-control" value="<?php echo $user['NIC']; ?>" readonly>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">User Code</label>
-                    <input type="text" name="usercode" class="form-control" value="<?php echo $user['user_code']; ?>" required>
+                    <input type="text" name="usercode" class="form-control" value="<?php echo htmlspecialchars($user['user_code']); ?>" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Full Name</label>
-                    <input type="text" name="fullname" class="form-control" value="<?php echo $user['Fullname']; ?>" required>
+                    <input type="text" name="fullname" class="form-control" value="<?php echo htmlspecialchars($user['Fullname']); ?>" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Address</label>
-                    <input type="text" name="address" class="form-control" value="<?php echo $user['Address']; ?>" required>
+                    <input type="text" name="address" class="form-control" value="<?php echo htmlspecialchars($user['Address']); ?>" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Contact</label>
-                    <input type="text" name="contact" class="form-control" value="<?php echo $user['Contact']; ?>" required>
+                    <input type="text" name="contact" class="form-control" value="<?php echo htmlspecialchars($user['Contact']); ?>" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Gender</label>
@@ -83,17 +118,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" value="<?php echo $user['Email']; ?>" required>
+                    <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['Email']); ?>" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Username</label>
-                    <input type="text" name="username" class="form-control" value="<?php echo $user['Username']; ?>" required>
+                    <input type="text" name="username" class="form-control" value="<?php echo htmlspecialchars($user['Username']); ?>" minlength="6" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" value="<?php echo $user['Password']; ?>" required>
+                    <input type="password" name="password" class="form-control" value="<?php echo htmlspecialchars($user['Password']); ?>" minlength="6" required>
                 </div>
-                <!-- ✅ Role Dropdown -->
                 <div class="mb-3">
                     <label class="form-label">Role</label>
                     <select name="role" class="form-select" required>

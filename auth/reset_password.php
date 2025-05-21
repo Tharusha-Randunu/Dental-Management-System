@@ -47,12 +47,12 @@ if (isset($_POST['reset_password'])) {
         $message = "<div class='alert alert-warning'>Password should be at least 6 characters.</div>";
         $showForm = true;
     } else {
-        // Hash the new password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        // Store plain-text password (NOT recommended)
+        $plain_password = $password;
 
         // Update password, clear reset token and expiry
         $stmt = $conn->prepare("UPDATE users SET Password=?, reset_token=NULL, token_expiry=NULL WHERE reset_token=?");
-        $stmt->bind_param("ss", $hashed_password, $token);
+        $stmt->bind_param("ss", $plain_password, $token);
         if ($stmt->execute()) {
             $message = "<div class='alert alert-success'>Password has been reset successfully. You can now <a href='login.php'>login</a>.</div>";
             $showForm = false;

@@ -9,7 +9,7 @@ if (isset($_GET['nic'])) {
     $nic = $_GET['nic'];
 
     // Fetch user details from the database using the NIC
-    $sql = "SELECT NIC,user_code, Fullname, Role, Address, Contact, Gender, Email, Username, Password FROM users WHERE NIC = '$nic'";
+    $sql = "SELECT NIC, user_code, Fullname, Role, Address, Contact, Gender, Email, Username, Password, profile_picture FROM users WHERE NIC = '$nic'";
     $result = $conn->query($sql);
 
     // Check if the user is found
@@ -40,8 +40,23 @@ if (isset($_GET['nic'])) {
                 <a href="../user_management.php" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
             </div>
 
-            <table class="table table-bordered">
+            <table class="table table-bordered text-center">
                 <tbody>
+                    <tr>
+                        <th colspan="2">Profile Picture</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <?php if (!empty($user['profile_picture'])): ?>
+                                <img src="data:image/jpeg;base64,<?php echo base64_encode($user['profile_picture']); ?>" 
+                                     alt="Profile Picture" 
+                                     class="rounded shadow" 
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            <?php else: ?>
+                                <span class="text-muted">No profile picture available</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                     <tr>
                         <th>NIC</th>
                         <td><?php echo htmlspecialchars($user['NIC']); ?></td>
@@ -87,6 +102,5 @@ if (isset($_GET['nic'])) {
         <?php } ?>
     </div>
 </div>
-
 
 <?php include '../../includes/footer.php'; ?>
