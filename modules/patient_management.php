@@ -26,22 +26,63 @@ $result = $conn->query($sql);
         
 
         <!-- Search Inputs -->
-        <div class="row mb-4">
-            <div class="col-md-2 mb-2"><input type="text" class="form-control search-input" data-column="0" placeholder="Search NIC"></div>
-            <div class="col-md-2 mb-2"><input type="text" class="form-control search-input" data-column="1" placeholder="Search Name"></div>
-            <div class="col-md-2 mb-2"><input type="text" class="form-control search-input" data-column="2" placeholder="Search Address"></div>
-            <div class="col-md-2 mb-2"><input type="text" class="form-control search-input" data-column="3" placeholder="Search Contact"></div>
-            <div class="col-md-2 mb-2">
-                <select class="form-control search-input text-muted" data-column="4">
-                    <option value="">Search Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            <div class="col-md-2 mb-2"><input type="text" class="form-control search-input" data-column="5" placeholder="Search Email"></div>
-            <div class="col-md-2 mb-2"><input type="text" class="form-control search-input" data-column="6" placeholder="Search Username"></div>
-        </div>
+        <!-- Search Filters -->
+<?php
+// Fetch distinct values for filters
+$nicOptions = $conn->query("SELECT DISTINCT NIC FROM patients");
+$nameOptions = $conn->query("SELECT DISTINCT Fullname FROM patients");
+$addressOptions = $conn->query("SELECT DISTINCT Address FROM patients");
+$contactOptions = $conn->query("SELECT DISTINCT Contact FROM patients");
+$genderOptions = $conn->query("SELECT DISTINCT Gender FROM patients");
+$emailOptions = $conn->query("SELECT DISTINCT Email FROM patients");
+$usernameOptions = $conn->query("SELECT DISTINCT Username FROM patients");
+?>
+
+<div class="row mb-4">
+    <div class="col-md-2 mb-2">
+        <select class="form-control search-input" data-column="0">
+            <option value="">Select NIC</option>
+            <?php while ($row = $nicOptions->fetch_assoc()) echo "<option value='{$row['NIC']}'>{$row['NIC']}</option>"; ?>
+        </select>
+    </div>
+    <div class="col-md-2 mb-2">
+        <select class="form-control search-input" data-column="1">
+            <option value="">Select Name</option>
+            <?php while ($row = $nameOptions->fetch_assoc()) echo "<option value='{$row['Fullname']}'>{$row['Fullname']}</option>"; ?>
+        </select>
+    </div>
+    <div class="col-md-2 mb-2">
+        <select class="form-control search-input" data-column="2">
+            <option value="">Select Address</option>
+            <?php while ($row = $addressOptions->fetch_assoc()) echo "<option value='{$row['Address']}'>{$row['Address']}</option>"; ?>
+        </select>
+    </div>
+    <div class="col-md-2 mb-2">
+        <select class="form-control search-input" data-column="3">
+            <option value="">Select Contact</option>
+            <?php while ($row = $contactOptions->fetch_assoc()) echo "<option value='{$row['Contact']}'>{$row['Contact']}</option>"; ?>
+        </select>
+    </div>
+    <div class="col-md-2 mb-2">
+        <select class="form-control search-input" data-column="4">
+            <option value="">Select Gender</option>
+            <?php while ($row = $genderOptions->fetch_assoc()) echo "<option value='{$row['Gender']}'>{$row['Gender']}</option>"; ?>
+        </select>
+    </div>
+    <div class="col-md-2 mb-2">
+        <select class="form-control search-input" data-column="5">
+            <option value="">Select Email</option>
+            <?php while ($row = $emailOptions->fetch_assoc()) echo "<option value='{$row['Email']}'>{$row['Email']}</option>"; ?>
+        </select>
+    </div>
+    <div class="col-md-2 mb-2">
+        <select class="form-control search-input" data-column="6">
+            <option value="">Select Username</option>
+            <?php while ($row = $usernameOptions->fetch_assoc()) echo "<option value='{$row['Username']}'>{$row['Username']}</option>"; ?>
+        </select>
+    </div>
+</div>
+
 
         <!-- Patients Table -->
         <div class="table-responsive">
@@ -169,4 +210,8 @@ $result = $conn->query($sql);
         });
     </script>
 <?php } ?>
+
+
+
+
 <?php include '../includes/footer.php'; ?>
