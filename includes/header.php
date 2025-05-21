@@ -1,5 +1,8 @@
 <?php
-session_start();
+// Start session only if none started yet
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

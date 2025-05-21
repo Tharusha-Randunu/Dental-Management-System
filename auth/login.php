@@ -1,3 +1,4 @@
+
 <?php
 include '../includes/header.php';
 include '../config/db.php'; // Adjusted to reflect the folder structure
@@ -93,8 +94,12 @@ if (isset($_POST['login'])) {
                 <button type="submit" name="login" class="btn btn-primary w-100">Login</button>
             </form>
             <br>
-            <a href="?reset=true">Forgot Password?</a>
+            <a href="forgot_password.php">Forgot Password?</a>
+
+            
+
         </div>
     </div>
 
 <?php include '../includes/footer.php'; ?>
+
