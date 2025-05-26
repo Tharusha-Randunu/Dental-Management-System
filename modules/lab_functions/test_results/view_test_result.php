@@ -42,15 +42,24 @@ $filesResult = $stmt->get_result();
     <div class="card shadow p-4">
         <h2 class="text-primary text-center">Test Result Details</h2>
 
+
+        <!-- Back Button -->
         <?php
 $backUrl = 'test_result_management.php';
-if (isset($_GET['from']) && $_GET['from'] === 'view_patient' && isset($testResult['patient_nic'])) {
-    $backUrl = '../../patient_functions/view_patient.php?nic=' . urlencode($testResult['patient_nic']);
+
+if (isset($_GET['from'])) {
+    if ($_GET['from'] === 'view_patient' && isset($testResult['patient_nic'])) {
+        $backUrl = '../../patient_functions/view_patient.php?nic=' . urlencode($testResult['patient_nic']);
+    } elseif ($_GET['from'] === 'patient_dashboard') {
+        $backUrl = '../../../patient_modules/patient_dashboard.php';
+    }
 }
 ?>
+
 <div class="d-flex justify-content-end">
     <a href="<?= $backUrl ?>" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
 </div>
+
 
         <div class="mb-3">
             <strong>Test ID:</strong> <?= htmlspecialchars($testResult['test_id']) ?><br>

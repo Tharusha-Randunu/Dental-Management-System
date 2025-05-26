@@ -45,11 +45,11 @@ $units = ['Pieces', 'Boxes', 'Bottles', 'Liters', 'Kilograms', 'Packs'];
         <form method="POST" action="add_inventory.php">
             <div class="mb-3">
                 <label for="item_id" class="form-label">Item ID</label>
-                <input type="text" name="item_id" id="item_id" class="form-control" required>
+                <input type="text" name="item_id" id="item_id" class="form-control" required maxlength="6">
             </div>
             <div class="mb-3">
                 <label for="item_name" class="form-label">Item Name</label>
-                <input type="text" name="item_name" id="item_name" class="form-control" required>
+                <input type="text" name="item_name" id="item_name" class="form-control" required maxlength="150">
             </div>
             <div class="mb-3">
                 <label for="category" class="form-label">Category</label>
@@ -83,11 +83,11 @@ $units = ['Pieces', 'Boxes', 'Bottles', 'Liters', 'Kilograms', 'Packs'];
             </div>
             <div class="mb-3">
                 <label for="supplier_name" class="form-label">Supplier Name</label>
-                <input type="text" name="supplier_name" id="supplier_name" class="form-control" required>
+                <input type="text" name="supplier_name" id="supplier_name" class="form-control" required maxlength="150">
             </div>
             <div class="mb-3">
                 <label for="supplier_code" class="form-label">Supplier Code</label> <!-- Added supplier code input -->
-                <input type="text" name="supplier_code" id="supplier_code" class="form-control" required>
+                <input type="text" name="supplier_code" id="supplier_code" class="form-control" required maxlength="6">
             </div>
             <div class="mb-3">
                 <label for="purchase_date" class="form-label">Purchase Date</label>

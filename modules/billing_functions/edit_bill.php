@@ -71,7 +71,7 @@ if (!$bill) {
 
             <div class="mb-3">
                 <label for="notes" class="form-label">Notes</label>
-                <textarea name="notes" class="form-control" rows="3"><?= htmlspecialchars($bill['notes']) ?></textarea>
+                <textarea name="notes" class="form-control" rows="3" maxlength='500'><?= htmlspecialchars($bill['notes']) ?></textarea>
             </div>
 
             <div class="mb-3">
@@ -115,7 +115,7 @@ if (!$bill) {
 
             <div class="text-end">
                 <button type="submit" class="btn btn-primary">Update Bill</button>
-                <a href="billing_management.php" class="btn btn-secondary">Cancel</a>
+                <a href="../billing_management.php" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>

@@ -64,14 +64,29 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         <?php } ?>
 
         <?php if ($bill) { ?>
-            <!-- Back Button -->
-            <div class="d-flex justify-content-start mb-3">
-                <a href="<?= $redirect_from === 'view_patient' 
-                    ? '../../patient_functions/view_patient.php?nic=' . urlencode($bill['patient_nic']) 
-                    : 'lab_billing_management.php'; ?>" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back
-                </a>
-            </div>
+            
+            
+
+<!-- Back Button -->
+            <?php
+$redirect_from = $_GET['from'] ?? '';
+$backUrl = 'lab_billing_management.php';
+
+if ($redirect_from === 'view_patient' && isset($bill['patient_nic'])) {
+    $backUrl = '../../patient_functions/view_patient.php?nic=' . urlencode($bill['patient_nic']);
+} elseif ($redirect_from === 'patient_dashboard') {
+    $backUrl = '../../../patient_modules/patient_dashboard.php';
+}
+?>
+
+
+<div class="d-flex justify-content-start mb-3">
+    <a href="<?= $backUrl ?>" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+
 
             <!-- Bill Info Table -->
             <table class="table table-bordered">

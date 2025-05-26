@@ -47,8 +47,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    echo "<script>alert('Test result updated successfully!'); window.location.href = 'view_test_result.php?id=$result_id';</script>";
-    exit;
+    echo "
+<!-- Success Modal -->
+<div class='modal fade show' id='successModal' tabindex='-1' style='display:block; background:rgba(0,0,0,0.5);' aria-modal='true' role='dialog'>
+  <div class='modal-dialog modal-dialog-centered'>
+    <div class='modal-content'>
+      <div class='modal-header bg-success text-white'>
+        <h5 class='modal-title'>Success</h5>
+      </div>
+      <div class='modal-body'>
+        <p>Test result updated successfully!</p>
+        <p class='text-muted small'>Redirecting in 3 seconds...</p>
+      </div>
+      <div class='modal-footer'>
+        <a href='view_test_result.php?id=$result_id' class='btn btn-primary'>Ok</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Auto Redirect -->
+<script>
+    setTimeout(function() {
+        window.location.href = 'view_test_result.php?id=$result_id';
+    }, 3000);
+</script>
+";
+exit;
+
 }
 ?>
 

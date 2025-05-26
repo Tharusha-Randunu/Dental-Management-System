@@ -80,7 +80,7 @@ $appointments = $conn->query("
 
             <div class="mb-3">
                 <label for="notes" class="form-label">Notes</label>
-                <textarea name="notes" id="notes" class="form-control" rows="3"></textarea>
+                <textarea name="notes" id="notes" class="form-control" rows="3" maxlength="500"></textarea>
             </div>
 
             <div class="mb-3">
@@ -125,7 +125,7 @@ $appointments = $conn->query("
 
             <div class="text-end">
                 <button type="submit" class="btn btn-success">Add Bill</button>
-                <a href="billing_management.php" class="btn btn-secondary">Cancel</a>
+                <a href="../billing_management.php" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>

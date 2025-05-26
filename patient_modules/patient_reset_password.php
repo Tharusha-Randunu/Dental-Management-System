@@ -6,12 +6,10 @@ include '../config/db.php';
 $message = '';
 $showForm = false;
 
-// Check if token is provided via GET
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
 
-    // Look up token in DB and check expiry
-    $stmt = $conn->prepare("SELECT Email, token_expiry FROM users WHERE reset_token = ?");
+    $stmt = $conn->prepare("SELECT Email, token_expiry FROM patients WHERE reset_token = ?");
     $stmt->bind_param("s", $token);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -19,7 +17,6 @@ if (isset($_GET['token'])) {
     if ($result->num_rows === 1) {
         $row = $result->fetch_assoc();
 
-        // Check if token expired
         if (strtotime($row['token_expiry']) > time()) {
             $email = $row['Email'];
             $showForm = true;
@@ -34,7 +31,6 @@ if (isset($_GET['token'])) {
     $message = "<div class='alert alert-warning'>No reset token provided.</div>";
 }
 
-// Handle form submission to reset password
 if (isset($_POST['reset_password'])) {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
@@ -43,18 +39,16 @@ if (isset($_POST['reset_password'])) {
     if ($password !== $confirm_password) {
         $message = "<div class='alert alert-warning'>Passwords do not match.</div>";
         $showForm = true;
-    } elseif (strlen($password) < 6) {
-        $message = "<div class='alert alert-warning'>Password should be not be less tha 6 characters or more than 15 characters.</div>";
+    } elseif (strlen($password) < 6 || strlen($password) > 15) {
+        $message = "<div class='alert alert-warning'>Password should be between 6 and 15 characters.</div>";
         $showForm = true;
     } else {
-        // Store plain-text password (NOT recommended)
         $plain_password = $password;
 
-        // Update password, clear reset token and expiry
-        $stmt = $conn->prepare("UPDATE users SET Password=?, reset_token=NULL, token_expiry=NULL WHERE reset_token=?");
+        $stmt = $conn->prepare("UPDATE patients SET Password=?, reset_token=NULL, token_expiry=NULL WHERE reset_token=?");
         $stmt->bind_param("ss", $plain_password, $token);
         if ($stmt->execute()) {
-            $message = "<div class='alert alert-success'>Password has been reset successfully. You can now <a href='login.php'>login</a>.</div>";
+            $message = "<div class='alert alert-success'>Password has been reset successfully. You can now <a href='patient_login.php'>login</a>.</div>";
             $showForm = false;
         } else {
             $message = "<div class='alert alert-danger'>Something went wrong. Please try again later.</div>";
@@ -67,7 +61,7 @@ if (isset($_POST['reset_password'])) {
 
 <div class="container mt-5">
     <div class="card p-4 shadow-lg" style="max-width: 450px; margin: auto;">
-        <h2 class="text-center text-primary mb-4">Reset Password</h2>
+        <h2 class="text-center text-primary mb-4">Reset Password (Patient)</h2>
         <?php echo $message; ?>
 
         <?php if ($showForm): ?>
@@ -84,7 +78,7 @@ if (isset($_POST['reset_password'])) {
                 <button type="submit" name="reset_password" class="btn btn-primary w-100">Reset Password</button><p></p>
             </form>
 
-            <a href="forgot_password.php" ><button type="submit" name="submit" class="btn btn-outline-secondary btn-back-home w-100">← Change Email</button></a>
+                    <a href="patient_forgot_password.php" ><button type="submit" name="submit" class="btn btn-outline-secondary btn-back-home w-100">← Change Email</button></a>
 
         <?php endif; ?>
     </div>

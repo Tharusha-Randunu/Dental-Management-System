@@ -12,7 +12,7 @@ include '../config/db.php';
 $nic = $_SESSION['patient_nic'];
 
 // Fetch patient details
-$sql = "SELECT NIC, Fullname, Address, Contact, Gender, Email, Username FROM patients WHERE NIC = ?";
+$sql = "SELECT NIC, Fullname, Address, Contact, Gender, Email, Username, profile_picture FROM patients WHERE NIC = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $nic);
 $stmt->execute();
@@ -92,7 +92,6 @@ $lab_stmt->close();
 <div class="container mt-4">
    
 
-
     <div class="card shadow-lg p-4 mb-4">
         <h2 class="text-center text-primary">My Details</h2>
 
@@ -104,6 +103,16 @@ $lab_stmt->close();
             <!-- Patient Information Table -->
             <table class="table table-bordered">
                 <tbody>
+                    <tr>
+                        <th>Profile Picture</th>
+                        <td>
+                            <?php if (!empty($patient['profile_picture'])): ?>
+                                <img src="data:image/jpeg;base64,<?= base64_encode($patient['profile_picture']) ?>" alt="Profile Picture" style="max-width:150px; max-height:150px; object-fit:cover; border-radius: 8px;">
+                            <?php else: ?>
+                                <span>No picture available</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                     <tr><th>NIC</th><td><?= htmlspecialchars($patient['NIC']) ?></td></tr>
                     <tr><th>Full Name</th><td><?= htmlspecialchars($patient['Fullname']) ?></td></tr>
                     <tr><th>Address</th><td><?= htmlspecialchars($patient['Address']) ?></td></tr>
@@ -114,9 +123,9 @@ $lab_stmt->close();
                 </tbody>
             </table>
              <div class="d-flex justify-content-end mb-3">
-        <a href="edit_patient_profile.php" class="btn btn-warning me-2">Edit Profile</a>
-        <a href="patient_logout.php" class="btn btn-danger">Logout</a>
-    </div>
+                <a href="edit_patient_profile.php" class="btn btn-warning me-2">Edit Profile</a>
+                <a href="patient_logout.php" class="btn btn-danger">Logout</a>
+            </div>
         <?php } ?>
     </div>
 

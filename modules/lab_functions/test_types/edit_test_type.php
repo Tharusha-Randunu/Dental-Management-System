@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="mb-3">
                 <label for="test_name" class="form-label">Test Name</label>
                 <input type="text" name="test_name" id="test_name" class="form-control" 
-                       value="<?php echo htmlspecialchars($row['test_name']); ?>" required>
+                       value="<?php echo htmlspecialchars($row['test_name']); ?>" required maxlength="100">
             </div>
             <div class="mb-3">
                 <label for="cost" class="form-label">Price (LKR)</label>
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="mb-3">
                 <label for="sample_type" class="form-label">Sample Type</label>
                 <input type="text" name="sample_type" id="sample_type" class="form-control" 
-                       value="<?php echo htmlspecialchars($row['sample_type']); ?>" required>
+                       value="<?php echo htmlspecialchars($row['sample_type']); ?>" required maxlength="100">
             </div>
 
             <div class="d-flex justify-content-between">

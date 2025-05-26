@@ -13,35 +13,28 @@ $message = '';
 
 if (isset($_POST['submit'])) {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $result = $conn->query("SELECT * FROM users WHERE Email='$email'");
+    $result = $conn->query("SELECT * FROM patients WHERE Email='$email'");
 
     if ($result->num_rows > 0) {
-        // Generate token and update DB
         $token = bin2hex(random_bytes(50));
         $expiry = date("Y-m-d H:i:s", strtotime("+1 hour"));
-        $conn->query("UPDATE users SET reset_token='$token', token_expiry='$expiry' WHERE Email='$email'");
+        $conn->query("UPDATE patients SET reset_token='$token', token_expiry='$expiry' WHERE Email='$email'");
 
-        // Create reset link
-        $resetLink = "http://localhost/Dental_System/auth/reset_password.php?token=$token";
+        $resetLink = "http://localhost/Dental_System/patient_modules/patient_reset_password.php?token=$token";
 
-        // Send email using PHPMailer
         $mail = new PHPMailer(true);
-
         try {
-            // Server settings
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'tharushapereraonline@gmail.com';         // Your Gmail address
-            $mail->Password   = 'rcgu jwed yljz ajnb';           // App-specific password
+            $mail->Username   = 'tharushapereraonline@gmail.com';
+            $mail->Password   = 'rcgu jwed yljz ajnb'; // App-specific password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
-            // Recipients
             $mail->setFrom('tharushapereraonline@gmail.com', 'Dental Hub');
             $mail->addAddress($email);
 
-            // Content
             $mail->isHTML(true);
             $mail->Subject = 'Password Reset Request - Dental Hub';
             $mail->Body    = "
@@ -64,7 +57,7 @@ if (isset($_POST['submit'])) {
 
 <div class="container mt-5">
     <div class="card p-4 shadow-lg">
-        <h2 class="text-center text-primary">Forgot Password</h2>
+        <h2 class="text-center text-primary">Patient Forgot Password</h2>
         <?php echo $message; ?>
         <form method="POST" action="">
             <div class="mb-3">
@@ -72,9 +65,10 @@ if (isset($_POST['submit'])) {
                 <input type="email" name="email" class="form-control" required>
             </div>
             <button type="submit" name="submit" class="btn btn-primary w-100">Send Reset Link</button><p></p>
-        </form>
+            
 
-        <a href="login.php" ><button type="submit" name="submit" class="btn btn-outline-secondary btn-back-home w-100">← Back to Login</button></a>
+        </form>
+        <a href="patient_login.php" ><button type="submit" name="submit" class="btn btn-outline-secondary btn-back-home w-100">← Back to Login</button></a>
     </div>
 </div>
 

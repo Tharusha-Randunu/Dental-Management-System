@@ -46,12 +46,23 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         <?php } ?>
 
         <?php if ($bill) { ?>
+
+            
             <!-- Back Button -->
-            <div class="d-flex justify-content-start mb-3">
-                <a href="<?= $redirect_from === 'view_patient' ? '../patient_functions/view_patient.php?nic=' . urlencode($bill['patient_nic']) : '../billing_management.php'; ?>" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back
-                </a>
-            </div>
+<div class="d-flex justify-content-start mb-3">
+    <a href="<?php
+        if ($redirect_from === 'view_patient') {
+            echo '../patient_functions/view_patient.php?nic=' . urlencode($bill['patient_nic']);
+        } elseif ($redirect_from === 'patient_dashboard') {
+            echo '../../patient_modules/patient_dashboard.php';
+        } else {
+            echo '../billing_management.php';
+        }
+    ?>" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
 
             <!-- Bill Info Table -->
             <table class="table table-bordered">
@@ -63,7 +74,13 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                     <tr><th>Patient Name</th><td><?= htmlspecialchars($bill['patient_name']); ?></td></tr>
                     <tr><th>Dentist Code</th><td><?= htmlspecialchars($bill['dentist_code']); ?></td></tr>
                     <tr><th>Dentist Name</th><td><?= htmlspecialchars($bill['dentist_name']); ?></td></tr>
-                    <tr><th>Notes</th><td><?= nl2br(htmlspecialchars($bill['notes'])); ?></td></tr>
+                    
+                    <tr>
+    <th>Notes</th>
+    <td style="white-space: pre-wrap; word-break: break-word; max-width: 600px;">
+        <?= nl2br(htmlspecialchars($bill['notes'])); ?>
+    </td>
+</tr>
                     <tr><th>Total Amount</th><td>Rs. <?= number_format($bill['total_amount'], 2); ?></td></tr>
                     <tr><th>Discount</th><td>Rs. <?= number_format($bill['discount'], 2); ?></td></tr>
                     <tr><th>Tax</th><td>Rs. <?= number_format($bill['tax'], 2); ?></td></tr>

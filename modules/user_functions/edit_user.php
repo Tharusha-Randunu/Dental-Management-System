@@ -86,6 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="mb-3">
                     <label class="form-label">Upload New Profile Picture</label>
                     <input type="file" name="profile_picture" class="form-control">
+                    <div class="form-text">File Types Allowed: JPEG, JPG, PNG.</div>
                 </div>
 
                 <div class="mb-3">
@@ -94,11 +95,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="mb-3">
                     <label class="form-label">User Code</label>
-                    <input type="text" name="usercode" class="form-control" value="<?php echo htmlspecialchars($user['user_code']); ?>" required>
+                    <input type="text" name="usercode" class="form-control" value="<?php echo htmlspecialchars($user['user_code']); ?>" required maxlength="6">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Full Name</label>
-                    <input type="text" name="fullname" class="form-control" value="<?php echo htmlspecialchars($user['Fullname']); ?>" required>
+                    <input type="text" name="fullname" class="form-control" value="<?php echo htmlspecialchars($user['Fullname']); ?>" required maxlength="255">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Address</label>
@@ -106,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Contact</label>
-                    <input type="text" name="contact" class="form-control" value="<?php echo htmlspecialchars($user['Contact']); ?>" required>
+                    <input type="text" name="contact" class="form-control" value="<?php echo htmlspecialchars($user['Contact']); ?>" required maxlength="10">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Gender</label>
@@ -117,18 +118,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['Email']); ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Username</label>
-                    <input type="text" name="username" class="form-control" value="<?php echo htmlspecialchars($user['Username']); ?>" minlength="6" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" value="<?php echo htmlspecialchars($user['Password']); ?>" minlength="6" required>
-                </div>
-                <div class="mb-3">
                     <label class="form-label">Role</label>
                     <select name="role" class="form-select" required>
                         <option value="Admin" <?php echo $user['Role'] == 'Admin' ? 'selected' : ''; ?>>Admin</option>
@@ -137,6 +126,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <option value="Lab_Technician" <?php echo $user['Role'] == 'Lab_Technician' ? 'selected' : ''; ?>>Lab Technician</option>
                     </select>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['Email']); ?>" required maxlength="50">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" value="<?php echo htmlspecialchars($user['Username']); ?>" minlength="6" required maxlength="15">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" value="<?php echo htmlspecialchars($user['Password']); ?>" minlength="6" required maxlength="15">
+                </div>
+                
 
                 <div class="d-flex justify-content-between">
                     <a href="../user_management.php" class="btn btn-danger"><i class="bi bi-arrow-left"></i> Cancel</a>

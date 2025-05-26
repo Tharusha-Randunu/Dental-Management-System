@@ -9,8 +9,8 @@ if (!isset($_GET['nic']) || empty($_GET['nic'])) {
 }
 $nic = $_GET['nic'];
 
-// Fetch patient details from the database
-$sql = "SELECT NIC, Fullname, Address, Contact, Gender, Email, Username, Password FROM patients WHERE NIC = ?";
+// Fetch patient details from the database including profile_picture
+$sql = "SELECT NIC, Fullname, Address, Contact, Gender, Email, Username, Password, profile_picture FROM patients WHERE NIC = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $nic);
 $stmt->execute();
@@ -75,7 +75,6 @@ while ($row = $test_result->fetch_assoc()) {
 }
 $test_stmt->close();
 
-
 // --- Fetch lab billing history ---
 $lab_bills = [];
 $lab_sql = "SELECT bill_id, total_amount, discount, tax, grand_total, amount_paid, amount_remaining, payment_status, created_at 
@@ -107,9 +106,24 @@ $lab_stmt->close();
                 <a href="../patient_management.php" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
             </div>
 
-            <!-- Patient Information Table -->
-            <table class="table table-bordered">
+            <!-- Patient Information Table with Profile Picture as first row -->
+            <table class="table table-bordered text-center">
                 <tbody>
+                    <tr>
+                        <th colspan="2">Profile Picture</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <?php if (!empty($patient['profile_picture'])): ?>
+                                <img src="data:image/jpeg;base64,<?php echo base64_encode($patient['profile_picture']); ?>" 
+                                     alt="Profile Picture" 
+                                     class="rounded shadow" 
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            <?php else: ?>
+                                <span class="text-muted">No profile picture available</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                     <tr><th>NIC</th><td><?= htmlspecialchars($patient['NIC']) ?></td></tr>
                     <tr><th>Full Name</th><td><?= htmlspecialchars($patient['Fullname']) ?></td></tr>
                     <tr><th>Address</th><td><?= htmlspecialchars($patient['Address']) ?></td></tr>

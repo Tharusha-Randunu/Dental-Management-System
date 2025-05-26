@@ -101,16 +101,16 @@ if (isset($_POST['login'])) {
 
         <form action="patient_login.php" method="POST">
             <div class="mb-3">
-                <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
+                <input type="text" name="username" class="form-control" placeholder="Username" required autofocus maxlength="15">
             </div>
             <div class="mb-3">
-                <input type="password" name="password" class="form-control" placeholder="Password" required>
+                <input type="password" name="password" class="form-control" placeholder="Password" required maxlength="15">
             </div>
             <button type="submit" name="login" class="btn btn-primary w-100">Login</button>
         </form>
 
         <div class="mt-3">
-            <a href="forgot_password.php" class="text-decoration-none">Forgot Password?</a>
+            <a href="patient_forgot_password.php" class="text-decoration-none">Forgot Password?</a>
         </div>
 
         <div class="mt-4">

@@ -151,7 +151,7 @@ $testTypes = $conn->query("SELECT test_type_id, test_name FROM test_types");
 
             <div class="mb-3">
                 <label for="notes" class="form-label">Notes (optional)</label>
-                <textarea name="notes" class="form-control" rows="3"></textarea>
+                <textarea name="notes" class="form-control" rows="3" ></textarea>
             </div>
 
             <div class="d-flex justify-content-between">

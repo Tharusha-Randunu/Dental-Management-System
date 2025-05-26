@@ -111,10 +111,10 @@ if (isset($_POST['login'])) {
             <!-- Login Form -->
             <form action="login.php" method="POST">
                 <div class="mb-3">
-                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                    <input type="text" name="username" class="form-control" placeholder="Username" required maxlength="15">
                 </div>
                 <div class="mb-3">
-                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                    <input type="password" name="password" class="form-control" placeholder="Password" required maxlength="15"x>
                 </div>
                 <button type="submit" name="login" class="btn btn-primary w-100">Login</button>
             </form>

@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="form-group mb-3">
                 <label for="notes">Notes</label>
-                <textarea class="form-control" name="notes"><?php echo htmlspecialchars($request['notes']); ?></textarea>
+                <textarea class="form-control" name="notes" ><?php echo htmlspecialchars($request['notes']); ?></textarea>
             </div>
 
             <div class="form-group mb-3">

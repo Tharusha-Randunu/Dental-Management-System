@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div class="mb-3">
                     <label class="form-label">Item Name</label>
-                    <input type="text" name="item_name" class="form-control" value="<?php echo htmlspecialchars($item['item_name']); ?>" required>
+                    <input type="text" name="item_name" class="form-control" value="<?php echo htmlspecialchars($item['item_name']); ?>" required maxlength="150">
                 </div>
 
                 <div class="mb-3">
@@ -114,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div class="mb-3">
                     <label class="form-label">Supplier Name</label>
-                    <input type="text" name="supplier_name" class="form-control" value="<?php echo htmlspecialchars($item['supplier_name']); ?>" required>
+                    <input type="text" name="supplier_name" class="form-control" value="<?php echo htmlspecialchars($item['supplier_name']); ?>" required maxlength="150">
                 </div>
 
                 <div class="mb-3">

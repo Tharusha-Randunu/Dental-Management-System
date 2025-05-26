@@ -117,7 +117,7 @@ if ($result->num_rows > 0) {
                     </tr>
                     <tr>
                         <th>Notes</th>
-                        <td><?php echo htmlspecialchars($request['notes'] ?: 'N/A'); ?></td>
+                        <td style="white-space: pre-wrap; word-break: break-word; max-width: 600px;"><?php echo htmlspecialchars($request['notes'] ?: 'N/A'); ?></td>
                     </tr>
                     <tr>
                         <th>Sample Collected Date</th>
