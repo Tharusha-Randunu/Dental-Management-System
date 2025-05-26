@@ -44,14 +44,23 @@ if (!array_key_exists($role, $modules)) {
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #f0f4f8;
+background: linear-gradient(135deg,rgb(215, 237, 255),rgb(239, 247, 251),rgb(176, 207, 251));
+            background-size: 300% 300%;
+            animation: gradientAnimation 15s ease infinite;
             font-family: 'Roboto', sans-serif;
         }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .container {
             max-width: 1200px;
         }
         h1 {
-            color: #007bff;
+            color:rgb(41, 82, 159);
             font-weight: 600;
         }
         h4 {
@@ -114,12 +123,12 @@ if (!array_key_exists($role, $modules)) {
 
         
         /* Light pastel colors */
-        .bg-light-blue { background-color: #f0f9ff !important; } /* Lightest blue */
-        .bg-light-green { background-color: #f2fff5 !important; } /* Lightest green */
-        .bg-light-yellow { background-color: #fffdf2 !important; } /* Lightest yellow */
-        .bg-light-pink { background-color: #fff5f8 !important; } /* Lightest pink */
-        .bg-light-purple { background-color: #f8f5ff !important; } /* Lightest purple */
-        .bg-light-gray { background-color: #f9f9f9 !important; } /* Lightest gray */
+     /*   .bg-light-blue { background-color: #f0f9ff !important; } /* Lightest blue */
+      /*  .bg-light-green { background-color: #f2fff5 !important; } /* Lightest green */
+       /* .bg-light-yellow { background-color: #fffdf2 !important; } /* Lightest yellow */
+      /*  .bg-light-pink { background-color: #fff5f8 !important; } /* Lightest pink */
+       /* .bg-light-purple { background-color: #f8f5ff !important; } /* Lightest purple */
+      /*  .bg-light-gray { background-color: #f9f9f9 !important; } /* Lightest gray */
     </style>
 </head>
 <body>
@@ -148,7 +157,9 @@ if (!array_key_exists($role, $modules)) {
                 foreach ($modules[$role] as $module) {
                     $colorClass = $colors[$colorIndex % count($colors)]; // Cycle through colors
                     echo "<div class='col-md-4 mb-4'>";
-                    echo "<div class='card $colorClass'>"; 
+                    #echo "<div class='card $colorClass'>"; 
+                    echo "<div class='card bg-white border'>";
+
                     echo "<div class='card-body'>";
                     echo "<h5 class='card-title'>$module</h5>";
                     echo "<div class='mt-auto'>"; // New div to push button to bottom-left
