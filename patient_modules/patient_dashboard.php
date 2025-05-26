@@ -196,7 +196,7 @@ $lab_stmt->close();
                             <td><?= htmlspecialchars($bill['bill_id']) ?></td>
                             <td><?= htmlspecialchars($bill['appointment_id']) ?></td>
                             <td><?= htmlspecialchars($bill['appointment_date']) ?></td>
-                            <td><?= htmlspecialchars($bill['notes']) ?></td>
+                            <td style="word-break: break-word; max-width: 600px;"><?= htmlspecialchars($bill['notes']) ?></td>
                             <td>Rs. <?= number_format($bill['total_amount'], 2) ?></td>
                             <td>Rs. <?= number_format($bill['discount'], 2) ?></td>
                             <td>Rs. <?= number_format($bill['tax'], 2) ?></td>
@@ -287,3 +287,4 @@ $lab_stmt->close();
 </div>
 
 <?php include '../includes/footer.php'; ?>
+         

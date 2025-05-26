@@ -75,12 +75,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                     <tr><th>Dentist Code</th><td><?= htmlspecialchars($bill['dentist_code']); ?></td></tr>
                     <tr><th>Dentist Name</th><td><?= htmlspecialchars($bill['dentist_name']); ?></td></tr>
                     
-                    <tr>
-    <th>Notes</th>
-    <td style="white-space: pre-wrap; word-break: break-word; max-width: 600px;">
-        <?= nl2br(htmlspecialchars($bill['notes'])); ?>
-    </td>
-</tr>
+                    <tr><th>Notes</th><td style="word-break: break-word; max-width: 600px;">
+                        <?= nl2br(htmlspecialchars($bill['notes'])); ?></td></tr>
+
                     <tr><th>Total Amount</th><td>Rs. <?= number_format($bill['total_amount'], 2); ?></td></tr>
                     <tr><th>Discount</th><td>Rs. <?= number_format($bill['discount'], 2); ?></td></tr>
                     <tr><th>Tax</th><td>Rs. <?= number_format($bill['tax'], 2); ?></td></tr>
