@@ -1,9 +1,31 @@
 <?php
-// Sample notifications (replace with your DB fetch)
-$notifications = [
-    ['id'=>1, 'message'=>'New appointment scheduled', 'read'=>false],
-    ['id'=>2, 'message'=>'Inventory stock low', 'read'=>true],
-];
+
+include __DIR__ . '/../config/db.php';  
+
+// Fetch stock alerts from inventory table
+$stockAlerts = [];
+$sql = "SELECT item_id, supplier_code, item_name, category, quantity, unit, reorder_level FROM inventory WHERE quantity <= reorder_level";
+$result = $conn->query($sql);
+
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $stockAlerts[] = $row;
+    }
+}
+
+// Notifications array only contains stock alerts now
+$notifications = [];
+
+foreach ($stockAlerts as $alert) {
+    $notifications[] = [
+        'id' => 'stock_' . $alert['item_id'] . '_' . $alert['supplier_code'], // unique ID for stock alert
+        'message' => "Stock low: {$alert['item_name']} ({$alert['category']}) - Only {$alert['quantity']} {$alert['unit']} left!",
+        'read' => false,
+        'item_id' => $alert['item_id'],
+        'supplier_code' => $alert['supplier_code']
+    ];
+}
+
 $newAlerts = false;
 foreach ($notifications as $notif) {
     if (!$notif['read']) {
@@ -14,11 +36,10 @@ foreach ($notifications as $notif) {
 ?>
 
 <style>
-  /* Bell toggle button */
   .notification-toggle-btn {
     position: fixed;
     top: 20px;
-    right: 80px; /* place it left of your sidebar toggle */
+    right: 80px;
     font-size: 26px;
     color: #0d47a1;
     background-color: #fff;
@@ -26,19 +47,18 @@ foreach ($notifications as $notif) {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     cursor: pointer;
-    z-index: 1000; /* above sidebar */
+    z-index: 1000;
     transition: background-color 0.3s ease;
   }
 
-  
   .notification-toggle-btn:hover {
     background-color: #bbdefb;
   }
 
-  /* Glow effect for new alerts */
   .notification-toggle-btn.glow {
     animation: glow-pulse 1.5s infinite alternate;
   }
+
   @keyframes glow-pulse {
     from {
       text-shadow: 0 0 5px #ff3d00, 0 0 10px #ff3d00;
@@ -50,62 +70,86 @@ foreach ($notifications as $notif) {
     }
   }
 
-  /* Dropdown container */
   .notification-dropdown {
     position: fixed;
-    top: 60px; /* below toggle button */
+    top: 85px;
     right: 80px;
-    width: 280px;
+    width: 320px;
     max-height: 350px;
-    background: #fff;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    border-radius: 6px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     overflow-y: auto;
     display: none;
     z-index: 950;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: none;
+    padding: 12px 0;
   }
+
   .notification-dropdown.active {
     display: block;
   }
 
-  /* Notifications */
   .notification-item {
-    padding: 10px 15px;
+    padding: 12px 20px;
     border-bottom: 1px solid #eee;
-    font-size: 14px;
-    color: #333;
+    font-size: 15px;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    user-select: none;
+    border-left: 4px solid transparent;
+    border-radius: 0 8px 8px 0;
   }
+
+  .notification-item:hover {
+    background-color: #f0f4ff;
+    border-left-color: #1976d2;
+  }
+
+  .notification-item.read {
+  background-color: #f9f9f9;
+  color: #888;
+  font-weight: normal;
+  border-left-color: transparent;
+}
+
+
   .notification-item.unread {
-    background-color: #e3f2fd;
+    background-color: #e8f0fe;
     font-weight: 600;
+    border-left-color: #ff5722;
+    color: #222;
   }
+
   .notification-item:last-child {
     border-bottom: none;
   }
 
-  /* Empty notification */
   .notification-empty {
-    padding: 20px;
+    padding: 28px;
     text-align: center;
-    color: #888;
+    color: #999;
     font-style: italic;
+    font-size: 14px;
   }
 
-  /* Responsive */
   @media (max-width: 576px) {
     .notification-toggle-btn {
       top: 15px;
-      right: auto;      /* Remove right positioning */
-      left: 15px;       /* Position on the left */
-      font-size: 26px;  /* Keep normal size */
-      padding: 10px 12px; /* Keep original padding */
+      right: auto;
+      left: 15px;
+      font-size: 26px;
+      padding: 10px 12px;
     }
     .notification-dropdown {
       top: 80px;
-      right: auto;       /* Remove right positioning */
-      left: 15px;        /* Align dropdown with button on left */
+      right: auto;
+      left: 15px;
       width: 220px;
       max-height: 300px;
     }
@@ -129,10 +173,21 @@ foreach ($notifications as $notif) {
 <!-- Dropdown -->
 <div id="notificationDropdown" class="notification-dropdown" aria-live="polite" aria-atomic="true">
   <?php if (empty($notifications)): ?>
-    <div class="notification-empty">No notifications</div>
+    <div class="notification-empty">No notifications to show</div>
   <?php else: ?>
     <?php foreach ($notifications as $notif): ?>
-      <div class="notification-item <?php echo $notif['read'] ? '' : 'unread'; ?>">
+      <?php
+        $itemId = urlencode($notif['item_id']);
+        $supplierCode = urlencode($notif['supplier_code']);
+        $notifId = htmlspecialchars($notif['id']);
+      ?>
+      <div 
+        id="<?php echo $notifId; ?>"
+        class="notification-item <?php echo $notif['read'] ? '' : 'unread'; ?>" 
+        onclick="viewStockAlert('<?php echo $itemId; ?>', '<?php echo $supplierCode; ?>', '<?php echo $notifId; ?>')"
+        style="cursor:pointer;"
+        title="Click to view item details"
+      >
         <?php echo htmlspecialchars($notif['message']); ?>
       </div>
     <?php endforeach; ?>
@@ -145,16 +200,10 @@ foreach ($notifications as $notif) {
     const icon = document.getElementById('notificationIcon');
     const isActive = dropdown.classList.toggle('active');
 
-    if (isActive) {
-      icon.classList.remove('bi-bell');
-      icon.classList.add('bi-x');
-    } else {
-      icon.classList.remove('bi-x');
-      icon.classList.add('bi-bell');
-    }
+    icon.classList.toggle('bi-bell', !isActive);
+    icon.classList.toggle('bi-x', isActive);
   }
 
-  // Close dropdown on outside click
   document.addEventListener('click', function(e) {
     const toggleBtn = document.getElementById('notificationToggleBtn');
     const dropdown = document.getElementById('notificationDropdown');
@@ -168,4 +217,22 @@ foreach ($notifications as $notif) {
       }
     }
   });
+
+  function viewStockAlert(itemId, supplierCode, notifId) {
+  const notifElem = document.getElementById(notifId);
+  if (notifElem) {
+    notifElem.classList.remove('unread');
+    notifElem.classList.add('read');
+  }
+
+  const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+  if (unreadCount === 0) {
+    document.getElementById('notificationToggleBtn').classList.remove('glow');
+  }
+
+  window.location.href = '/Dental_System/modules/inventory_functions/view_inventory.php?id=' 
+    + encodeURIComponent(itemId) 
+    + '&supplier_code=' + encodeURIComponent(supplierCode);
+}
+
 </script>
