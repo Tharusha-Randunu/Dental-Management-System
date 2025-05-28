@@ -139,9 +139,9 @@ background: linear-gradient(135deg,rgb(215, 237, 255),rgb(239, 247, 251),rgb(176
             <h1>Dental Hub - DMS</h1>
             <h4>Welcome, <?php echo $name; ?>!</h4>
        
-            <div class="d-flex justify-content-end p-3">
+        <!--    <div class="d-flex justify-content-end p-3">
         <a href="../auth/logout.php" class="btn btn-danger">Logout</a>
-    </div>
+    </div>-->
        
        
         </div>
@@ -158,7 +158,8 @@ background: linear-gradient(135deg,rgb(215, 237, 255),rgb(239, 247, 251),rgb(176
                     $colorClass = $colors[$colorIndex % count($colors)]; // Cycle through colors
                     echo "<div class='col-md-4 mb-4'>";
                     #echo "<div class='card $colorClass'>"; 
-                    echo "<div class='card bg-white border'>";
+                    #echo "<div class='card bg-white border'>";
+                    echo "<div class='card' style='background-color: #f4f8fc; '>";
 
                     echo "<div class='card-body'>";
                     echo "<h5 class='card-title'>$module</h5>";
