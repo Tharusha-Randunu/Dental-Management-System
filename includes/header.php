@@ -4,11 +4,30 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Redirect to login if user is not logged in and not already on the login page
-$currentPage = basename($_SERVER['PHP_SELF']);
-if (!isset($_SESSION['username']) && $currentPage !== 'login.php') {
-    header("Location: ../auth/login.php"); // Adjust path if needed
-    exit();
+$currentFile = basename($_SERVER['PHP_SELF']);
+
+// Pages that don't require login
+$publicPages = ['index.php', 'login.php', 'patient_login.php'];
+
+// Only explicitly list patient-only pages
+$patientPages = ['patient_dashboard.php', 'confirm_patient_logout.php', 'edit_patient_profile.php','patient_forgot_password.php','patient_logout.php','patient_reset_password.php']; 
+
+$userLoggedIn = isset($_SESSION['username']);
+$patientLoggedIn = isset($_SESSION['patient_username']);
+
+if (!in_array($currentFile, $publicPages)) {
+    if (in_array($currentFile, $patientPages)) {
+        if (!$patientLoggedIn) {
+            header("Location: /Dental_System/patient_modules/patient_login.php");
+            exit();
+        }
+    } else {
+        // Everything else is assumed to be user-restricted
+        if (!$userLoggedIn) {
+            header("Location: /Dental_System/auth/login.php");
+            exit();
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
