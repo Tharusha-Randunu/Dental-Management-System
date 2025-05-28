@@ -39,9 +39,18 @@ $modules = [
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #f0f4f8;
+background: linear-gradient(135deg,rgb(215, 237, 255),rgb(239, 247, 251),rgb(176, 207, 251));
+            background-size: 300% 300%;
+            animation: gradientAnimation 15s ease infinite;
             font-family: 'Roboto', sans-serif;
         }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .container {
             max-width: 1200px;
         }
@@ -109,12 +118,12 @@ $modules = [
 
         
         /* Light pastel colors */
-        .bg-light-blue { background-color: #f0f9ff !important; } /* Lightest blue */
-        .bg-light-green { background-color: #f2fff5 !important; } /* Lightest green */
-        .bg-light-yellow { background-color: #fffdf2 !important; } /* Lightest yellow */
-        .bg-light-pink { background-color: #fff5f8 !important; } /* Lightest pink */
-        .bg-light-purple { background-color: #f8f5ff !important; } /* Lightest purple */
-        .bg-light-gray { background-color: #f9f9f9 !important; } /* Lightest gray */
+     /*   .bg-light-blue { background-color: #f0f9ff !important; } /* Lightest blue */
+      /*  .bg-light-green { background-color: #f2fff5 !important; } /* Lightest green */
+      /*  .bg-light-yellow { background-color: #fffdf2 !important; } /* Lightest yellow */
+     /*   .bg-light-pink { background-color: #fff5f8 !important; } /* Lightest pink */
+     /*   .bg-light-purple { background-color: #f8f5ff !important; } /* Lightest purple */
+       /* .bg-light-gray { background-color: #f9f9f9 !important; } /* Lightest gray */
     </style>
 </head>
 <body>
@@ -122,11 +131,11 @@ $modules = [
     <div class="container">
         <div class="text-center my-4">
             <h1>Laboratory Management</h1>
-            <h4>Welcome, <?php echo $name; ?>!</h4>
+           <!-- <h4>Welcome, <?php echo $name; ?>!</h4>-->
 
             <div class="d-flex justify-content-between mb-3">
                 <a href="../views/dashboard.php" class="btn btn-danger"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
-                <a href="../auth/logout.php" class="btn btn-danger">Logout</a>
+                
             </div>
         </div>
 
