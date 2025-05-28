@@ -1,29 +1,29 @@
 <?php
-
-include __DIR__ . '/../config/db.php';  
-
-// Fetch stock alerts from inventory table
-$stockAlerts = [];
-$sql = "SELECT item_id, supplier_code, item_name, category, quantity, unit, reorder_level FROM inventory WHERE quantity <= reorder_level";
-$result = $conn->query($sql);
-
-if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $stockAlerts[] = $row;
-    }
+include __DIR__ . '/../config/db.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-// Notifications array only contains stock alerts now
+$userRole = strtolower($_SESSION['role'] ?? '');
+
 $notifications = [];
 
-foreach ($stockAlerts as $alert) {
-    $notifications[] = [
-        'id' => 'stock_' . $alert['item_id'] . '_' . $alert['supplier_code'], // unique ID for stock alert
-        'message' => "Stock low: {$alert['item_name']} ({$alert['category']}) - Only {$alert['quantity']} {$alert['unit']} left!",
-        'read' => false,
-        'item_id' => $alert['item_id'],
-        'supplier_code' => $alert['supplier_code']
-    ];
+if ($userRole === 'admin' || $userRole === 'dentist') {
+    // Fetch stock alerts from inventory table
+    $sql = "SELECT item_id, supplier_code, item_name, category, quantity, unit, reorder_level FROM inventory WHERE quantity <= reorder_level";
+    $result = $conn->query($sql);
+
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $notifications[] = [
+                'id' => 'stock_' . $row['item_id'] . '_' . $row['supplier_code'],
+                'message' => "Stock low: {$row['item_name']} ({$row['category']}) - Only {$row['quantity']} {$row['unit']} left!",
+                'read' => false,
+                'item_id' => $row['item_id'],
+                'supplier_code' => $row['supplier_code']
+            ];
+        }
+    }
 }
 
 $newAlerts = false;
@@ -72,7 +72,7 @@ foreach ($notifications as $notif) {
 
   .notification-dropdown {
     position: fixed;
-    top: 85px;
+    top: 60px;
     right: 80px;
     width: 320px;
     max-height: 350px;
@@ -112,12 +112,11 @@ foreach ($notifications as $notif) {
   }
 
   .notification-item.read {
-  background-color: #f9f9f9;
-  color: #888;
-  font-weight: normal;
-  border-left-color: transparent;
-}
-
+    background-color: #f9f9f9;
+    color: #888;
+    font-weight: normal;
+    border-left-color: transparent;
+  }
 
   .notification-item.unread {
     background-color: #e8f0fe;
@@ -183,7 +182,8 @@ foreach ($notifications as $notif) {
       ?>
       <div 
         id="<?php echo $notifId; ?>"
-        class="notification-item <?php echo $notif['read'] ? '' : 'unread'; ?>" 
+        class="notification-item unread" 
+        data-notif-id="<?php echo $notifId; ?>"
         onclick="viewStockAlert('<?php echo $itemId; ?>', '<?php echo $supplierCode; ?>', '<?php echo $notifId; ?>')"
         style="cursor:pointer;"
         title="Click to view item details"
@@ -219,20 +219,47 @@ foreach ($notifications as $notif) {
   });
 
   function viewStockAlert(itemId, supplierCode, notifId) {
-  const notifElem = document.getElementById(notifId);
-  if (notifElem) {
-    notifElem.classList.remove('unread');
-    notifElem.classList.add('read');
+    const notifElem = document.getElementById(notifId);
+    if (notifElem) {
+      notifElem.classList.remove('unread');
+      notifElem.classList.add('read');
+    }
+
+    let readNotifs = JSON.parse(localStorage.getItem('readNotifications') || '[]');
+    if (!readNotifs.includes(notifId)) {
+      readNotifs.push(notifId);
+      localStorage.setItem('readNotifications', JSON.stringify(readNotifs));
+    }
+
+    const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+    if (unreadCount === 0) {
+      document.getElementById('notificationToggleBtn').classList.remove('glow');
+    }
+
+    window.location.href = '/Dental_System/modules/inventory_functions/view_inventory.php?id=' 
+      + encodeURIComponent(itemId) 
+      + '&supplier_code=' + encodeURIComponent(supplierCode);
   }
 
-  const unreadCount = document.querySelectorAll('.notification-item.unread').length;
-  if (unreadCount === 0) {
-    document.getElementById('notificationToggleBtn').classList.remove('glow');
-  }
+  document.addEventListener('DOMContentLoaded', function() {
+    const readNotifs = JSON.parse(localStorage.getItem('readNotifications') || '[]');
+    let hasUnread = false;
 
-  window.location.href = '/Dental_System/modules/inventory_functions/view_inventory.php?id=' 
-    + encodeURIComponent(itemId) 
-    + '&supplier_code=' + encodeURIComponent(supplierCode);
-}
+    document.querySelectorAll('.notification-item').forEach(elem => {
+      const id = elem.dataset.notifId;
+      if (readNotifs.includes(id)) {
+        elem.classList.remove('unread');
+        elem.classList.add('read');
+      } else {
+        hasUnread = true;
+      }
+    });
 
+    const toggleBtn = document.getElementById('notificationToggleBtn');
+    if (hasUnread) {
+      toggleBtn.classList.add('glow');
+    } else {
+      toggleBtn.classList.remove('glow');
+    }
+  });
 </script>

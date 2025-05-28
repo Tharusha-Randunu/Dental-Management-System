@@ -27,7 +27,7 @@ $modules = [
     'admin' => ['Patient Management', 'Appointment Scheduling', 'Billing Management', 'User Management', 'Inventory Management', 'Laboratory Management'],
     'receptionist' => ['Patient Management','Appointment Scheduling', 'Billing Management'],
     'lab_technician' => ['Patient Management','Laboratory Management'],
-    'dentist' => ['Patient Management','Laboratory Management']
+    'dentist' => ['Patient Management','Laboratory Management','Inventory Management']
 ];
 
 // Check if the role exists in the modules array, else set a default empty array

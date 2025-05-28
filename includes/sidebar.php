@@ -1,4 +1,12 @@
 <?php 
+// Start session if not started yet
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Only display sidebar if user (not patient) is logged in
+if (isset($_SESSION['username'])):
+
 // Make sure session and DB are available
 if (!isset($name) || !isset($role) || !isset($modules)) {     
     include __DIR__ . '/../config/db.php';    
@@ -182,20 +190,22 @@ if (!isset($name) || !isset($role) || !isset($modules)) {
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 
 <script>
-    
-
     function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const backdrop = document.getElementById('sidebar-backdrop');
-    const toggleBtn = document.getElementById('sidebarToggleBtn');
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        const toggleBtn = document.getElementById('sidebarToggleBtn');
 
-    sidebar.classList.toggle('active');
-    backdrop.classList.toggle('active');
+        sidebar.classList.toggle('active');
+        backdrop.classList.toggle('active');
 
-    if (sidebar.classList.contains('active')) {
-        toggleBtn.textContent = '✖'; // cross icon
-    } else {
-        toggleBtn.textContent = '☰'; // hamburger icon
+        if (sidebar.classList.contains('active')) {
+            toggleBtn.textContent = '✖'; // cross icon
+        } else {
+            toggleBtn.textContent = '☰'; // hamburger icon
+        }
     }
-}
 </script>
+
+<?php
+endif;  // end if user logged in check
+?>

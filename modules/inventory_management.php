@@ -1,7 +1,15 @@
 <?php
+
 include '../includes/header.php';
 include '../includes/sidebar.php'; 
 include '../config/db.php';
+
+
+
+// Ensure 'role' is set in session
+$role = isset($_SESSION['role']) ? strtolower(trim($_SESSION['role'])) : '';
+
+
 
 // Fetch inventory items from the database
 $sql = "SELECT * FROM inventory";
@@ -15,7 +23,9 @@ $result = $conn->query($sql);
 
         <div class="d-flex justify-content-between mb-3">
             <a href="../views/dashboard.php" class="btn btn-danger"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+            <?php if ($role !== 'dentist') { ?>
             <a href="inventory_functions/add_inventory.php" class="btn btn-success"><i class="bi bi-plus-circle"></i> Add Item</a>
+        <?php } ?>
         </div>
 
         <!-- Search Inputs as Dropdowns -->
@@ -128,10 +138,14 @@ $result = $conn->query($sql);
                             echo "<td>{$row['expiry_date']}</td>";
                             echo "<td>{$row['notes']}</td>";
                             echo "<td>
-                                    <a href='inventory_functions/view_inventory.php?id={$row['item_id']}&supplier_code={$row['supplier_code']}' class='btn btn-sm btn-info' title='View'><i class='bi bi-eye'></i></a>
-        <a href='inventory_functions/edit_inventory.php?id={$row['item_id']}&supplier_code={$row['supplier_code']}' class='btn btn-sm btn-warning mx-1' title='Edit'><i class='bi bi-pencil'></i></a>
-                                    <a href='#' class='btn btn-sm btn-danger delete-btn' data-id='{$row['item_id']}' title='Delete'><i class='bi bi-trash'></i></a>
-                                  </td>";
+    <a href='inventory_functions/view_inventory.php?id={$row['item_id']}&supplier_code={$row['supplier_code']}' class='btn btn-sm btn-info' title='View'><i class='bi bi-eye'></i></a>
+    <a href='inventory_functions/edit_inventory.php?id={$row['item_id']}&supplier_code={$row['supplier_code']}' class='btn btn-sm btn-warning mx-1' title='Edit'><i class='bi bi-pencil'></i></a>";
+    
+    if ($role !== 'dentist') {
+        echo "<a href='#' class='btn btn-sm btn-danger delete-btn' data-id='{$row['item_id']}' title='Delete'><i class='bi bi-trash'></i></a>";
+    }
+
+echo "</td>";
                             echo "</tr>";
                         }
                     } else {
