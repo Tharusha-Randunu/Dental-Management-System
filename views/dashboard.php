@@ -1,5 +1,7 @@
 <?php
 include '../includes/header.php';
+include '../includes/notifications.php';
+
 include '../includes/sidebar.php'; // Include sidebar
 
 // Include the database connection

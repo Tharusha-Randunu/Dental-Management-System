@@ -131,7 +131,8 @@ if (!isset($name) || !isset($role) || !isset($modules)) {
 </style>
 
 <!-- Toggle icon -->
-<div class="toggle-btn" onclick="toggleSidebar()">☰</div>
+<div class="toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()">☰</div>
+
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
@@ -181,10 +182,20 @@ if (!isset($name) || !isset($role) || !isset($modules)) {
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 
 <script>
+    
+
     function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const backdrop = document.getElementById('sidebar-backdrop');
-        sidebar.classList.toggle('active');
-        backdrop.classList.toggle('active');
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    const toggleBtn = document.getElementById('sidebarToggleBtn');
+
+    sidebar.classList.toggle('active');
+    backdrop.classList.toggle('active');
+
+    if (sidebar.classList.contains('active')) {
+        toggleBtn.textContent = '✖'; // cross icon
+    } else {
+        toggleBtn.textContent = '☰'; // hamburger icon
     }
+}
 </script>

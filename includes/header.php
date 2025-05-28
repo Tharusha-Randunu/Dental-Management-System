@@ -4,6 +4,9 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+
+
+
 $currentFile = basename($_SERVER['PHP_SELF']);
 
 // Pages that don't require login
@@ -49,3 +52,5 @@ if (!in_array($currentFile, $publicPages)) {
 </head>
 <body>
     <div class="container">
+        
+
