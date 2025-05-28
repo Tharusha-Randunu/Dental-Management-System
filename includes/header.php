@@ -3,6 +3,13 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
+// Redirect to login if user is not logged in and not already on the login page
+$currentPage = basename($_SERVER['PHP_SELF']);
+if (!isset($_SESSION['username']) && $currentPage !== 'login.php') {
+    header("Location: ../auth/login.php"); // Adjust path if needed
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

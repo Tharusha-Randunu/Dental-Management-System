@@ -1,7 +1,7 @@
 <?php 
 // Make sure session and DB are available
 if (!isset($name) || !isset($role) || !isset($modules)) {     
-    include '../config/db.php';     
+    include __DIR__ . '/../config/db.php';    
 
     $username = $_SESSION['username'];     
     $sql = "SELECT Role, Fullname, Profile_Picture FROM users WHERE Username='$username'";     
@@ -139,29 +139,31 @@ if (!isset($name) || !isset($role) || !isset($modules)) {
         <img src="<?php echo $profilePic; ?>" alt="Profile Picture">
         <h5><?php echo $name; ?></h5>
         <small><?php echo ucfirst($role); ?></small>
-    </div>
+    
 
     <?php
+
+    echo "<a href='/Dental_System/views/dashboard.php'>Dashboard</a>";
     if (!empty($modules[$role])) {
         foreach ($modules[$role] as $module) {
             switch ($module) {
                 case 'Patient Management':
-                    echo "<a href='../modules/patient_management.php'>Patient Management</a>";
+                    echo "<a href='/Dental_System/modules/patient_management.php'>Patient Management</a>";
                     break;
                 case 'Appointment Scheduling':
-                    echo "<a href='../modules/appointment_scheduling.php'>Appointment Scheduling</a>";
+                    echo "<a href='/Dental_System/modules/appointment_scheduling.php'>Appointment Scheduling</a>";
                     break;
                 case 'Billing Management':
-                    echo "<a href='../modules/billing_management.php'>Billing Management</a>";
+                    echo "<a href='/Dental_System/modules/billing_management.php'>Billing Management</a>";
                     break;
                 case 'User Management':
-                    echo "<a href='../modules/user_management.php'>User Management</a>";
+                    echo "<a href='/Dental_System/modules/user_management.php'>User Management</a>";
                     break;
                 case 'Inventory Management':
-                    echo "<a href='../modules/inventory_management.php'>Inventory Management</a>";
+                    echo "<a href='/Dental_System/modules/inventory_management.php'>Inventory Management</a>";
                     break;
                 case 'Laboratory Management':
-                    echo "<a href='../modules/laboratory_management.php'>Laboratory Management</a>";
+                    echo "<a href='/Dental_System/modules/laboratory_management.php'>Laboratory Management</a>";
                     break;
             }
         }
@@ -169,10 +171,11 @@ if (!isset($name) || !isset($role) || !isset($modules)) {
     ?>
 
     <div class="btn-group">
-        <a href="../auth/edit_profile.php" class="btn btn-outline-primary btn-sm ">Edit Profile</a>
-        <a href="../auth/logout.php" class="btn btn-outline-danger btn-sm ">Logout</a>
+        <a href="/Dental_System/modules/user_functions/view_user_profile.php" class="btn btn-outline-warning btn-sm ">View Profile</a>
+        <a href="/Dental_System/modules/user_functions/edit_user_profile.php" class="btn btn-outline-primary btn-sm ">Edit Profile</a>
+        <a href="/Dental_System/auth/logout.php" class="btn btn-outline-danger btn-sm ">Logout</a>
     </div>
-</div>
+</div></div>
 
 <!-- Optional backdrop -->
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>

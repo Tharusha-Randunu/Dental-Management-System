@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p class='text-muted small'>Redirecting in 3 seconds...</p>
       </div>
       <div class='modal-footer'>
-        <a href='view_test_result.php?id=$result_id' class='btn btn-primary'>Ok</a>
+        <a href='test_result_management.php?id=$result_id' class='btn btn-primary'>Ok</a>
       </div>
     </div>
   </div>
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- Auto Redirect -->
 <script>
     setTimeout(function() {
-        window.location.href = 'view_test_result.php?id=$result_id';
+        window.location.href = 'test_result_management.php?id=$result_id';
     }, 3000);
 </script>
 ";
@@ -94,7 +94,7 @@ exit;
             </div>
 
             <div class="d-flex justify-content-end">
-                <a href="view_test_result.php?id=<?= $result_id ?>" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Cancel</a>
+                <a href="test_result_management.php?id=<?= $result_id ?>" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Cancel</a>
                 <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Save Changes</button>
             </div>
         </form>
