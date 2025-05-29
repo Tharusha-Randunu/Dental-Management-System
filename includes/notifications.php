@@ -5,11 +5,13 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $userRole = strtolower($_SESSION['role'] ?? '');
+$userNIC = $_SESSION['nic'] ?? '';
+
+error_log("Session NIC: " . $userNIC); // Debug line (optional, can remove in production)
 
 $notifications = [];
 
 if ($userRole === 'admin' || $userRole === 'dentist') {
-    // Fetch stock alerts from inventory table
     $sql = "SELECT item_id, supplier_code, item_name, category, quantity, unit, reorder_level FROM inventory WHERE quantity <= reorder_level";
     $result = $conn->query($sql);
 
@@ -20,10 +22,39 @@ if ($userRole === 'admin' || $userRole === 'dentist') {
                 'message' => "Stock low: {$row['item_name']} ({$row['category']}) - Only {$row['quantity']} {$row['unit']} left!",
                 'read' => false,
                 'item_id' => $row['item_id'],
-                'supplier_code' => $row['supplier_code']
+                'supplier_code' => $row['supplier_code'],
+                'type' => 'stock'
             ];
         }
     }
+}
+
+if ($userRole === 'admin' || $userRole === 'lab_technician') {
+    $sqlLab = "SELECT tr.test_id, tr.patient_nic, tr.test_type_id, tr.request_date, tr.requested_by, tr.assigned_to, u.Fullname AS requested_by_name
+               FROM test_requests tr
+               LEFT JOIN users u ON tr.requested_by = u.NIC";
+
+    if ($userRole === 'lab_technician' && !empty($userNIC)) {
+        $sqlLab .= " WHERE tr.assigned_to = ?";
+        $stmtLab = $conn->prepare($sqlLab);
+        $stmtLab->bind_param("s", $userNIC);
+    } else {
+        $stmtLab = $conn->prepare($sqlLab);
+    }
+
+    if ($stmtLab && $stmtLab->execute()) {
+        $resultLab = $stmtLab->get_result();
+        while ($row = $resultLab->fetch_assoc()) {
+            $notifications[] = [
+                'id' => 'lab_' . $row['test_id'],
+                'message' => "New lab test request for Patient NIC: {$row['patient_nic']} - Test Type ID: {$row['test_type_id']} (Requested by: {$row['requested_by_name']})",
+                'read' => false,
+                'test_id' => $row['test_id'],
+                'type' => 'lab'
+            ];
+        }
+    }
+    if ($stmtLab) $stmtLab->close();
 }
 
 $newAlerts = false;
@@ -158,7 +189,7 @@ foreach ($notifications as $notif) {
 <!-- Bell toggle button -->
 <div
   id="notificationToggleBtn"
-  class="notification-toggle-btn <?php echo $newAlerts ? 'glow' : ''; ?>"
+  class="notification-toggle-btn <?php echo $newAlerts ? 'glow' : ''; ?> "
   onclick="toggleNotificationDropdown()"
   title="Notifications"
   aria-label="Notifications"
@@ -176,19 +207,24 @@ foreach ($notifications as $notif) {
   <?php else: ?>
     <?php foreach ($notifications as $notif): ?>
       <?php
-        $itemId = urlencode($notif['item_id']);
-        $supplierCode = urlencode($notif['supplier_code']);
         $notifId = htmlspecialchars($notif['id']);
+        $message = htmlspecialchars($notif['message']);
+        $type = $notif['type'];
       ?>
       <div 
         id="<?php echo $notifId; ?>"
         class="notification-item unread" 
         data-notif-id="<?php echo $notifId; ?>"
-        onclick="viewStockAlert('<?php echo $itemId; ?>', '<?php echo $supplierCode; ?>', '<?php echo $notifId; ?>')"
-        style="cursor:pointer;"
-        title="Click to view item details"
+        onclick="
+          <?php if ($type === 'stock'): ?>
+            viewNotification('<?php echo $notifId; ?>', 'stock', '<?php echo urlencode($notif['item_id']); ?>', '<?php echo urlencode($notif['supplier_code']); ?>');
+          <?php elseif ($type === 'lab'): ?>
+            viewNotification('<?php echo $notifId; ?>', 'lab', '<?php echo urlencode($notif['test_id']); ?>');
+          <?php endif; ?>
+        "
+        title="Click to view details"
       >
-        <?php echo htmlspecialchars($notif['message']); ?>
+        <?php echo $message; ?>
       </div>
     <?php endforeach; ?>
   <?php endif; ?>
@@ -218,7 +254,7 @@ foreach ($notifications as $notif) {
     }
   });
 
-  function viewStockAlert(itemId, supplierCode, notifId) {
+  function viewNotification(notifId, type, param1 = '', param2 = '') {
     const notifElem = document.getElementById(notifId);
     if (notifElem) {
       notifElem.classList.remove('unread');
@@ -236,30 +272,29 @@ foreach ($notifications as $notif) {
       document.getElementById('notificationToggleBtn').classList.remove('glow');
     }
 
-    window.location.href = '/Dental_System/modules/inventory_functions/view_inventory.php?id=' 
-      + encodeURIComponent(itemId) 
-      + '&supplier_code=' + encodeURIComponent(supplierCode);
+    if (type === 'stock') {
+      window.location.href = '/Dental_System/modules/inventory_functions/view_inventory.php?id=' 
+        + encodeURIComponent(param1) 
+        + '&supplier_code=' + encodeURIComponent(param2);
+    } else if (type === 'lab') {
+      window.location.href = '/Dental_System/modules/lab_functions/test_request/view_test_request.php?id=' 
+        + encodeURIComponent(param1);
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function() {
     const readNotifs = JSON.parse(localStorage.getItem('readNotifications') || '[]');
-    let hasUnread = false;
-
-    document.querySelectorAll('.notification-item').forEach(elem => {
-      const id = elem.dataset.notifId;
-      if (readNotifs.includes(id)) {
+    readNotifs.forEach(id => {
+      const elem = document.getElementById(id);
+      if (elem) {
         elem.classList.remove('unread');
         elem.classList.add('read');
-      } else {
-        hasUnread = true;
       }
     });
 
-    const toggleBtn = document.getElementById('notificationToggleBtn');
-    if (hasUnread) {
-      toggleBtn.classList.add('glow');
-    } else {
-      toggleBtn.classList.remove('glow');
+    const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+    if (unreadCount === 0) {
+      document.getElementById('notificationToggleBtn').classList.remove('glow');
     }
   });
 </script>
