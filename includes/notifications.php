@@ -39,7 +39,7 @@ foreach ($notifications as $notif) {
   .notification-toggle-btn {
     position: fixed;
     top: 20px;
-    right: 80px;
+    right: 73px;
     font-size: 26px;
     color: #0d47a1;
     background-color: #fff;
@@ -72,7 +72,7 @@ foreach ($notifications as $notif) {
 
   .notification-dropdown {
     position: fixed;
-    top: 60px;
+    top: 80px;
     right: 80px;
     width: 320px;
     max-height: 350px;
@@ -139,7 +139,7 @@ foreach ($notifications as $notif) {
 
   @media (max-width: 576px) {
     .notification-toggle-btn {
-      top: 15px;
+      top: 20px;
       right: auto;
       left: 15px;
       font-size: 26px;

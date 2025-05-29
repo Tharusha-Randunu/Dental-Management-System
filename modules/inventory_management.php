@@ -1,7 +1,10 @@
 <?php
 
 include '../includes/header.php';
-include '../includes/sidebar.php'; 
+
+include '../includes/notifications.php';
+include '../includes/sidebar.php';
+
 include '../config/db.php';
 
 

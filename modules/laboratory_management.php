@@ -1,6 +1,9 @@
 <?php
 include '../includes/header.php';
-include '../includes/sidebar.php'; // Include sidebar
+include '../includes/notifications.php';
+
+include '../includes/sidebar.php';
+
 
 // Include the database connection
 include '../config/db.php'; // Adjust the path to 'config' folder

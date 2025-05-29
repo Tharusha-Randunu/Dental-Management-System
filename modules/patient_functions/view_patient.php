@@ -1,7 +1,6 @@
 <?php
-include '../../includes/header.php';  // Corrected path to header.php
-include '../../includes/sidebar.php'; // Corrected path to sidebar.php
-include '../../config/db.php';        // Corrected path to db.php
+include '../../includes/header.php';  
+include '../../config/db.php';       
 
 // Get the patient NIC from the URL
 if (!isset($_GET['nic']) || empty($_GET['nic'])) {

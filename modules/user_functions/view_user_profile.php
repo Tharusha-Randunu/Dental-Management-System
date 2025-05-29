@@ -1,7 +1,6 @@
 <?php
 session_start();
 include '../../includes/header.php';
-include '../../includes/sidebar.php';
 include '../../config/db.php';
 
 // Check if user is logged in by username in session

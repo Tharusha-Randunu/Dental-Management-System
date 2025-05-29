@@ -1,6 +1,5 @@
 <?php
 include '../../includes/header.php';
-include '../../includes/sidebar.php';
 include '../../config/db.php';
 
 // Check if appointment ID and date are provided

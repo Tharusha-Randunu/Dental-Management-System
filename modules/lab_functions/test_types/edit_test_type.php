@@ -1,6 +1,5 @@
 <?php
 include '../../../includes/header.php';
-include '../../../includes/sidebar.php';
 include '../../../config/db.php';
 
 // Get test type ID from query string
