@@ -28,6 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result_id = $stmt->insert_id;
     $stmt->close();
 
+    // Add this block to update the test_requests table:
+$update = $conn->prepare("UPDATE test_requests SET result_availability = 'Yes' WHERE test_id = ?");
+$update->bind_param("i", $test_id);
+$update->execute();
+$update->close();
+
     // Handle file uploads
     if (!empty($_FILES['attachments']['name'][0])) {
         foreach ($_FILES['attachments']['tmp_name'] as $key => $tmp_name) {
