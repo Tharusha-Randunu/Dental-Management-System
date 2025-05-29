@@ -6,6 +6,7 @@ if (!isset($_SESSION['patient_nic'])) {
 }
 
 include '../includes/header.php';
+
 include '../config/db.php';
 
 $nic = $_SESSION['patient_nic'];

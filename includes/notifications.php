@@ -195,6 +195,17 @@ foreach ($notifications as $notif) {
     border-bottom: none;
   }
 
+
+
+/* Yellow for lab */
+.notification-item.unread.type-lab {
+  border-left-color: #ffeb3b; /* yellow */
+}
+
+/* Green for result */
+.notification-item.unread.type-result {
+  border-left-color: #4caf50; /* green */
+}
   .notification-empty {
     padding: 28px;
     text-align: center;
@@ -240,7 +251,7 @@ foreach ($notifications as $notif) {
   <?php if (empty($notifications)): ?>
     <div class="notification-empty">No notifications to show</div>
   <?php else: ?>
-    <?php foreach ($notifications as $notif): ?>
+<?php foreach ($notifications as $notif): ?>
       <?php
         $notifId = htmlspecialchars($notif['id']);
         $message = htmlspecialchars($notif['message']);
@@ -248,7 +259,8 @@ foreach ($notifications as $notif) {
       ?>
       <div 
         id="<?php echo $notifId; ?>"
-        class="notification-item unread" 
+        class="notification-item unread <?php echo 'type-' . $type; ?>" 
+  data-notif-id="<?php echo $notifId; ?>"
         data-notif-id="<?php echo $notifId; ?>"
         onclick="
           <?php if ($type === 'stock'): ?>
@@ -318,7 +330,7 @@ foreach ($notifications as $notif) {
       window.location.href = '/Dental_System/modules/lab_functions/test_request/view_test_request.php?id=' 
         + encodeURIComponent(param1);
     } else if (type === 'result') {
-      window.location.href = '/Dental_System/modules/lab_functions/test_result/view_test_result.php?id=' 
+      window.location.href = '/Dental_System/modules/lab_functions/test_results/view_test_result.php?id=' 
         + encodeURIComponent(param1);
     }
   }

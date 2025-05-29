@@ -192,8 +192,20 @@ if (isset($_GET['delete'])) {
                 } else {
                     $(this).hide();
                 }
-            });
+            });  
         });
+
+// Handle delete button click
+    $('.delete-btn').click(function () {
+        var appointmentId = $(this).data('id');
+        var appointmentDate = $(this).data('date');
+        var deleteUrl = 'appointment_functions/delete_appointment.php?id=' + encodeURIComponent(appointmentId) + '&date=' + encodeURIComponent(appointmentDate);
+        $('#confirmDelete').attr('href', deleteUrl);
+        $('#deleteModal').modal('show');
     });
+});
+
+
+    
 </script>
 <?php include '../includes/footer.php'; ?>
