@@ -8,12 +8,18 @@ include '../../../config/db.php';
 
 // Fetch test results with joined test_requests and patient data
 $sql = "
-    SELECT r.result_id, r.notes, tr.test_id, tr.patient_nic, p.Fullname AS patient_name
+    SELECT r.result_id, r.notes, tr.test_id, tr.patient_nic, 
+           p.Fullname AS patient_name,
+           u1.Fullname AS requested_by_name,
+           u2.Fullname AS assigned_to_name
     FROM test_results r
     JOIN test_requests tr ON r.test_id = tr.test_id
     JOIN patients p ON tr.patient_nic = p.NIC
+    LEFT JOIN users u1 ON tr.requested_by = u1.NIC
+    LEFT JOIN users u2 ON tr.assigned_to = u2.NIC
     ORDER BY r.result_id DESC
 ";
+
 $result = $conn->query($sql);
 ?>
 
@@ -84,7 +90,44 @@ $result = $conn->query($sql);
                     ?>
                 </select>
             </div>
-          
+          <!-- Filter by Requested By -->
+<div class="col">
+    <select id="filterRequestedBy" class="form-control search-input" data-column="4">
+        <option value="">Select Requested By</option>
+        <?php
+        $sql_req_users = "
+            SELECT DISTINCT u.Fullname 
+            FROM users u 
+            JOIN test_requests tr ON tr.requested_by = u.NIC 
+            ORDER BY u.Fullname
+        ";
+        $req_users = $conn->query($sql_req_users);
+        while ($row = $req_users->fetch_assoc()) {
+            echo "<option value='{$row['Fullname']}'>{$row['Fullname']}</option>";
+        }
+        ?>
+    </select>
+</div>
+
+<!-- Filter by Assigned To -->
+<div class="col">
+    <select id="filterAssignedTo" class="form-control search-input" data-column="5">
+        <option value="">Select Assigned To</option>
+        <?php
+        $sql_assigned_users = "
+            SELECT DISTINCT u.Fullname 
+            FROM users u 
+            JOIN test_requests tr ON tr.assigned_to = u.NIC 
+            ORDER BY u.Fullname
+        ";
+        $assigned_users = $conn->query($sql_assigned_users);
+        while ($row = $assigned_users->fetch_assoc()) {
+            echo "<option value='{$row['Fullname']}'>{$row['Fullname']}</option>";
+        }
+        ?>
+    </select>
+</div>
+
         </div>
 
         <div class="table-responsive">
@@ -95,6 +138,9 @@ $result = $conn->query($sql);
                         <th>Test Request ID</th>
                         <th>Patient NIC</th>
                         <th>Patient Name</th>
+                        <th>Requested By</th>
+<th>Assigned To</th>
+
                         <th>Notes</th>
                         <th>Actions</th>
                     </tr>
@@ -108,6 +154,9 @@ $result = $conn->query($sql);
                             echo "<td>{$row['test_id']}</td>";
                             echo "<td>{$row['patient_nic']}</td>";
                             echo "<td>{$row['patient_name']}</td>";
+                            echo "<td>{$row['requested_by_name']}</td>";
+echo "<td>{$row['assigned_to_name']}</td>";
+
                             echo "<td>{$row['notes']}</td>";
                             echo "<td>
                                     <a href='view_test_result.php?id={$row['result_id']}' class='btn btn-sm btn-info' title='View'><i class='bi bi-eye'></i></a>

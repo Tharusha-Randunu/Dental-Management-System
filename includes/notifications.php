@@ -11,6 +11,7 @@ error_log("Session NIC: " . $userNIC); // Debug line (optional, can remove in pr
 
 $notifications = [];
 
+// Stock low notifications for admin and dentist
 if ($userRole === 'admin' || $userRole === 'dentist') {
     $sql = "SELECT item_id, supplier_code, item_name, category, quantity, unit, reorder_level FROM inventory WHERE quantity <= reorder_level";
     $result = $conn->query($sql);
@@ -29,6 +30,7 @@ if ($userRole === 'admin' || $userRole === 'dentist') {
     }
 }
 
+// Lab test requests notifications for admin and lab_technician
 if ($userRole === 'admin' || $userRole === 'lab_technician') {
     $sqlLab = "SELECT tr.test_id, tr.patient_nic, tr.test_type_id, tr.request_date, tr.requested_by, tr.assigned_to, u.Fullname AS requested_by_name
                FROM test_requests tr
@@ -55,6 +57,39 @@ if ($userRole === 'admin' || $userRole === 'lab_technician') {
         }
     }
     if ($stmtLab) $stmtLab->close();
+}
+
+// New test_result notifications for admins and requesting dentists
+if ($userRole === 'admin' || $userRole === 'dentist') {
+    $sqlResults = "SELECT tr.result_id, tr.test_id, tr.patient_nic, ts.requested_by, u.Fullname AS requested_by_name
+                   FROM test_results tr
+                   JOIN test_requests ts ON tr.test_id = ts.test_id
+                   LEFT JOIN users u ON ts.requested_by = u.NIC";
+
+    if ($userRole === 'dentist' && !empty($userNIC)) {
+        // Dentists only see test results for tests they requested
+        $sqlResults .= " WHERE ts.requested_by = ?";
+        $stmtResults = $conn->prepare($sqlResults);
+        $stmtResults->bind_param("s", $userNIC);
+    } else {
+        // Admins see all test results
+        $stmtResults = $conn->prepare($sqlResults);
+    }
+
+    if ($stmtResults && $stmtResults->execute()) {
+        $resultResults = $stmtResults->get_result();
+        while ($row = $resultResults->fetch_assoc()) {
+            $notifications[] = [
+                'id' => 'result_' . $row['result_id'],
+                'message' => "New test result added for Patient NIC: {$row['patient_nic']} (Requested by: {$row['requested_by_name']})",
+                'read' => false,
+                'result_id' => $row['result_id'],
+                'test_id' => $row['test_id'],
+                'type' => 'result'
+            ];
+        }
+    }
+    if ($stmtResults) $stmtResults->close();
 }
 
 $newAlerts = false;
@@ -220,9 +255,22 @@ foreach ($notifications as $notif) {
             viewNotification('<?php echo $notifId; ?>', 'stock', '<?php echo urlencode($notif['item_id']); ?>', '<?php echo urlencode($notif['supplier_code']); ?>');
           <?php elseif ($type === 'lab'): ?>
             viewNotification('<?php echo $notifId; ?>', 'lab', '<?php echo urlencode($notif['test_id']); ?>');
+          <?php elseif ($type === 'result'): ?>
+            viewNotification('<?php echo $notifId; ?>', 'result', '<?php echo urlencode($notif['result_id']); ?>');
           <?php endif; ?>
         "
         title="Click to view details"
+        role="button"
+        tabindex="0"
+        onkeydown="if(event.key==='Enter'){ 
+          <?php if ($type === 'stock'): ?>
+            viewNotification('<?php echo $notifId; ?>', 'stock', '<?php echo urlencode($notif['item_id']); ?>', '<?php echo urlencode($notif['supplier_code']); ?>');
+          <?php elseif ($type === 'lab'): ?>
+            viewNotification('<?php echo $notifId; ?>', 'lab', '<?php echo urlencode($notif['test_id']); ?>');
+          <?php elseif ($type === 'result'): ?>
+            viewNotification('<?php echo $notifId; ?>', 'result', '<?php echo urlencode($notif['result_id']); ?>');
+          <?php endif; ?>
+        }"
       >
         <?php echo $message; ?>
       </div>
@@ -233,26 +281,13 @@ foreach ($notifications as $notif) {
 <script>
   function toggleNotificationDropdown() {
     const dropdown = document.getElementById('notificationDropdown');
-    const icon = document.getElementById('notificationIcon');
-    const isActive = dropdown.classList.toggle('active');
-
-    icon.classList.toggle('bi-bell', !isActive);
-    icon.classList.toggle('bi-x', isActive);
-  }
-
-  document.addEventListener('click', function(e) {
-    const toggleBtn = document.getElementById('notificationToggleBtn');
-    const dropdown = document.getElementById('notificationDropdown');
-    const icon = document.getElementById('notificationIcon');
-
-    if (!toggleBtn.contains(e.target) && !dropdown.contains(e.target)) {
-      if (dropdown.classList.contains('active')) {
-        dropdown.classList.remove('active');
-        icon.classList.remove('bi-x');
-        icon.classList.add('bi-bell');
-      }
+    const btn = document.getElementById('notificationToggleBtn');
+    dropdown.classList.toggle('active');
+    // Remove glow if dropdown is opened (user checked notifications)
+    if (dropdown.classList.contains('active')) {
+      btn.classList.remove('glow');
     }
-  });
+  }
 
   function viewNotification(notifId, type, param1 = '', param2 = '') {
     const notifElem = document.getElementById(notifId);
@@ -261,17 +296,20 @@ foreach ($notifications as $notif) {
       notifElem.classList.add('read');
     }
 
+    // Save read notifications in localStorage to persist across reloads
     let readNotifs = JSON.parse(localStorage.getItem('readNotifications') || '[]');
     if (!readNotifs.includes(notifId)) {
       readNotifs.push(notifId);
       localStorage.setItem('readNotifications', JSON.stringify(readNotifs));
     }
 
+    // If no unread notifications remain, remove glow from button
     const unreadCount = document.querySelectorAll('.notification-item.unread').length;
     if (unreadCount === 0) {
       document.getElementById('notificationToggleBtn').classList.remove('glow');
     }
 
+    // Redirect based on notification type
     if (type === 'stock') {
       window.location.href = '/Dental_System/modules/inventory_functions/view_inventory.php?id=' 
         + encodeURIComponent(param1) 
@@ -279,10 +317,14 @@ foreach ($notifications as $notif) {
     } else if (type === 'lab') {
       window.location.href = '/Dental_System/modules/lab_functions/test_request/view_test_request.php?id=' 
         + encodeURIComponent(param1);
+    } else if (type === 'result') {
+      window.location.href = '/Dental_System/modules/lab_functions/test_result/view_test_result.php?id=' 
+        + encodeURIComponent(param1);
     }
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
+  // On page load, mark notifications as read based on localStorage
+  document.addEventListener('DOMContentLoaded', () => {
     const readNotifs = JSON.parse(localStorage.getItem('readNotifications') || '[]');
     readNotifs.forEach(id => {
       const elem = document.getElementById(id);
@@ -291,7 +333,7 @@ foreach ($notifications as $notif) {
         elem.classList.add('read');
       }
     });
-
+    // Remove glow if no unread
     const unreadCount = document.querySelectorAll('.notification-item.unread').length;
     if (unreadCount === 0) {
       document.getElementById('notificationToggleBtn').classList.remove('glow');

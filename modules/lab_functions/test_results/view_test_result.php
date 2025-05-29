@@ -12,11 +12,19 @@ $result_id = $_GET['id'];
 
 // Fetch test result details
 $stmt = $conn->prepare("
-    SELECT r.*, p.Fullname AS patient_name, tr.test_id, tt.test_name
+    SELECT 
+        r.*, 
+        p.Fullname AS patient_name, 
+        tr.test_id, 
+        tt.test_name,
+        dentist_user.Fullname AS requested_by_name,
+        tech_user.Fullname AS assigned_to_name
     FROM test_results r
     JOIN test_requests tr ON r.test_id = tr.test_id
     JOIN test_types tt ON tr.test_type_id = tt.test_type_id
     JOIN patients p ON r.patient_nic = p.NIC
+    LEFT JOIN users dentist_user ON tr.requested_by = dentist_user.NIC
+    LEFT JOIN users tech_user ON tr.assigned_to = tech_user.NIC
     WHERE r.result_id = ?
 ");
 $stmt->bind_param("i", $result_id);
@@ -41,30 +49,31 @@ $filesResult = $stmt->get_result();
     <div class="card shadow p-4">
         <h2 class="text-primary text-center">Test Result Details</h2>
 
-
         <!-- Back Button -->
         <?php
-$backUrl = 'test_result_management.php';
+        $backUrl = 'test_result_management.php';
 
-if (isset($_GET['from'])) {
-    if ($_GET['from'] === 'view_patient' && isset($testResult['patient_nic'])) {
-        $backUrl = '../../patient_functions/view_patient.php?nic=' . urlencode($testResult['patient_nic']);
-    } elseif ($_GET['from'] === 'patient_dashboard') {
-        $backUrl = '../../../patient_modules/patient_dashboard.php';
-    }
-}
-?>
+        if (isset($_GET['from'])) {
+            if ($_GET['from'] === 'view_patient' && isset($testResult['patient_nic'])) {
+                $backUrl = '../../patient_functions/view_patient.php?nic=' . urlencode($testResult['patient_nic']);
+            } elseif ($_GET['from'] === 'patient_dashboard') {
+                $backUrl = '../../../patient_modules/patient_dashboard.php';
+            }
+        }
+        ?>
 
-<div class="d-flex justify-content-end">
-    <a href="<?= $backUrl ?>" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
-</div>
-
+        <div class="d-flex justify-content-end">
+            <a href="<?= $backUrl ?>" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+        </div>
 
         <div class="mb-3">
+            <strong>Result ID:</strong> <?= htmlspecialchars($testResult['result_id']) ?><br>
             <strong>Test ID:</strong> <?= htmlspecialchars($testResult['test_id']) ?><br>
             <strong>Test Type:</strong> <?= htmlspecialchars($testResult['test_name']) ?><br>
             <strong>Patient:</strong> <?= htmlspecialchars($testResult['patient_name']) ?><br>
             <strong>Patient NIC:</strong> <?= htmlspecialchars($testResult['patient_nic']) ?><br>
+            <strong>Requested By (Dentist):</strong> <?= htmlspecialchars(($testResult['requested_by_name'] && strtolower($testResult['requested_by_name']) !== 'null') ? $testResult['requested_by_name'] : 'N/A') ?><br>
+            <strong>Assigned Lab Technician:</strong> <?= htmlspecialchars(($testResult['assigned_to_name'] && strtolower($testResult['assigned_to_name']) !== 'null') ? $testResult['assigned_to_name'] : 'N/A') ?><br>
             <strong>Notes:</strong>
             <p><?= nl2br(htmlspecialchars($testResult['notes'])) ?></p>
         </div>
@@ -98,17 +107,7 @@ if (isset($_GET['from'])) {
                 <p class="text-muted">No attachments found.</p>
             <?php endif; ?>
         </div>
-
-       
-
-
-            
     </div>
 </div>
 
 <?php include '../../../includes/footer.php'; ?>
-
-
-
-
-
