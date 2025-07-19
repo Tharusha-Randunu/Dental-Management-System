@@ -2,6 +2,8 @@
 include '../../includes/header.php';
 include '../../config/db.php';
 
+
+// Initializing an array to store validation errors for form fields.
 $errors = [
     'nic' => '',
     'fullname' => '',
@@ -13,7 +15,12 @@ $errors = [
     'password' => '',
 ];
 
+
+// Handling form submission via POST method.
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // Retrieving form input data.
+
     $nic = trim($_POST['nic']);
     $fullname = trim($_POST['fullname']);
     $address = trim($_POST['address']);
@@ -23,12 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
+     // Handling profile picture upload if provided.
     $profilePic = null;
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
         $profilePic = file_get_contents($_FILES['profile_picture']['tmp_name']);
     }
 
-    // Validation
+    // Validation rules for each form field.
     if (empty($nic)) {
         $errors['nic'] = 'NIC is required.';
     } elseif (strlen($nic) < 10 || strlen($nic) > 12) {
@@ -93,6 +101,8 @@ $checkStmt->bind_param("sss", $nic, $username, $email);
 $checkStmt->execute();
 $result = $checkStmt->get_result();
 
+    // Displaying errors if NIC, Username, or Email already exists in the database.
+
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         if ($row['NIC'] === $nic) {
@@ -111,16 +121,15 @@ $checkStmt->close();
 
 
 
+    // Inserting patient data into the database if no validation errors.
 
-    if (!$hasErrors) {
-
-        
+    if (!$hasErrors) {       
         $stmt = $conn->prepare("INSERT INTO patients (NIC, Fullname, Address, Contact, Gender, Email, Username, Password, profile_picture)
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssssssss", $nic, $fullname, $address, $contact, $gender, $email, $username, $password, $profilePic);
-
+// Executing insertion query.
         if ($stmt->execute()) {
-            // OLD MESSAGE CODE ADDED HERE
+            // Redirecting after successful insertion with a success message.
             $message = "Patient added successfully.";
              echo "<script>
             setTimeout(function() {
@@ -135,22 +144,31 @@ $checkStmt->close();
 }
 ?>
 
+
+
+
 <div class="container mt-4">
     <div class="card shadow-lg p-4">
         <h2 class="text-center text-primary">Add New Patient</h2>
 
-        <!-- OLD MESSAGE DISPLAY -->
+        <!-- Displaying success message if patient added successfully. -->
         <?php if (isset($message)): ?>
             <div class="alert alert-info">
                 <?= htmlspecialchars($message) ?>
             </div>
         <?php endif; ?>
 
+
+        <!-- Displaying general error message if any. -->
+
         <?php if (!empty($errors['general'])): ?>
             <div class="alert alert-danger">
                 <?= htmlspecialchars($errors['general']) ?>
             </div>
         <?php endif; ?>
+
+
+        <!-- Patient form with field validations and error messages. -->
 
         <form method="POST" action="add_patient.php" enctype="multipart/form-data" id="patientForm" novalidate>
             <div class="mb-3">
@@ -297,7 +315,7 @@ $checkStmt->close();
                 >
                 <div class="form-text">File Types Allowed: JPEG, JPG, PNG.</div>
             </div>
-
+<!-- Buttons for submission and going back. -->
             <div class="d-flex justify-content-between">
                 <a href="../patient_management.php" class="btn btn-danger"><i class="bi bi-arrow-left"></i> Back</a>
                 <button type="submit" class="btn btn-success ms-2"><i class="bi bi-check-lg"></i> Add Patient</button>
@@ -306,6 +324,7 @@ $checkStmt->close();
     </div>
 </div>
 
+<!-- Client-side validation script using JavaScript -->
 <script>
     document.getElementById('patientForm').addEventListener('submit', function (e) {
         const form = e.target;
@@ -323,7 +342,7 @@ $checkStmt->close();
                 input.classList.add('border-danger');
                 valid = false;
 
-                // Show custom messages under fields on client side as fallback
+                // Show custom validation error if not already shown. 
                 if (!errorDiv || !errorDiv.classList.contains('text-danger')) {
                     const errMsg = document.createElement('div');
                     errMsg.classList.add('text-danger', 'mt-1');
