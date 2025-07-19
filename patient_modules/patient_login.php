@@ -5,13 +5,16 @@ include '../config/db.php';
 
 $error_message = '';
 
+// Check if the login form was submitted
 if (isset($_POST['login'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']); // Plain text password for now
+    $password = mysqli_real_escape_string($conn, $_POST['password']); 
 
+    // Build SQL query to check credentials
     $sql = "SELECT * FROM patients WHERE Username='$username' AND Password='$password'";
     $result = $conn->query($sql);
 
+        // If matching user is found
     if ($result && $result->num_rows > 0) {
         $patient = $result->fetch_assoc();
 
@@ -24,6 +27,7 @@ if (isset($_POST['login'])) {
         header("Location: patient_dashboard.php");
         exit();
     } else {
+        // Invalid credentials
         $error_message = 'Invalid username or password. Please try again.';
     }
 }
@@ -35,9 +39,13 @@ if (isset($_POST['login'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Patient Login - Dental Management System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap CSS and Icons -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+   
+   <!-- Custom Styling -->
     <style>
+        /* Gradient background animation */
         body {
             margin: 0;
             padding: 0;
@@ -85,6 +93,7 @@ if (isset($_POST['login'])) {
     </style>
 </head>
 <body>
+<!-- Main login form UI -->
 
 <div class="container">
     <div class="login-card text-center">
@@ -93,11 +102,14 @@ if (isset($_POST['login'])) {
 
         <h5 class="mb-4 text-primary">Patient Login</h5>
 
+        <!-- Show error message if login fails -->
         <?php if (!empty($error_message)): ?>
             <div class="error-message">
                 <?php echo htmlspecialchars($error_message); ?>
             </div>
         <?php endif; ?>
+
+                <!-- Login form -->
 
         <form action="patient_login.php" method="POST">
             <div class="mb-3">
@@ -109,10 +121,13 @@ if (isset($_POST['login'])) {
             <button type="submit" name="login" class="btn btn-primary w-100">Login</button>
         </form>
 
+    <!-- Link to forgot password page -->
+
         <div class="mt-3">
             <a href="patient_forgot_password.php" class="text-decoration-none">Forgot Password?</a>
         </div>
 
+         <!-- Back to home button -->
         <div class="mt-4">
             <a href="../index.php" class="btn btn-outline-secondary btn-back-home w-100">← Back to Home</a>
         </div>
