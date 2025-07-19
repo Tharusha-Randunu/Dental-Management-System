@@ -3,24 +3,36 @@ session_start();
 include '../includes/header.php';
 include '../config/db.php';
 
+// Initialize error message
 $error_message = '';
+
+// Check if login form is submitted
 
 if (isset($_POST['login'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = mysqli_real_escape_string($conn, $_POST['password']); // Note: Consider hashing in production
 
+        // Escape input values to prevent SQL injection
+
     $sql = "SELECT * FROM users WHERE Username='$username' AND Password='$password'";
     $result = $conn->query($sql);
 
+        // Query to check if username and password match in users table
+
     if ($result->num_rows > 0) {
+         // Fetch user data and store in session
+
         $user = $result->fetch_assoc();
         $_SESSION['username'] = $username;
         $_SESSION['role'] = $user['Role'];
         $_SESSION['fullname'] = $user['Fullname'];
+        // Redirect to main dashboard
 
         header("Location: ../views/dashboard.php");
         exit();
     } else {
+                // If login failed
+
         $error_message = 'Invalid credentials! Please try again.';
     }
 }
@@ -32,9 +44,13 @@ if (isset($_POST['login'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Dental Management System</title>
+        <!-- Bootstrap CSS and Icons -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Icons -->
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Custom Gradient Background and Styling -->
 
     <style>
         body {
