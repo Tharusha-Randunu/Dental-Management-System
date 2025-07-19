@@ -10,7 +10,7 @@ $error_message = '';
 
 if (isset($_POST['login'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']); // Note: Consider hashing in production
+    $password = mysqli_real_escape_string($conn, $_POST['password']); 
 
         // Escape input values to prevent SQL injection
 

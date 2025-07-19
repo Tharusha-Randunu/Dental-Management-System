@@ -19,7 +19,7 @@ $appointments = $conn->query("
         Bill added successfully!
     </div>
 <?php endif; ?>
-
+<!-- Bill creation form -->
 <div class="container mt-4">
     <div class="card shadow p-4">
         <h3 class="text-primary text-center">Add Bill</h3>
@@ -132,6 +132,7 @@ $appointments = $conn->query("
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Get references to all necessary form fields
     const appointmentSelect = document.getElementById('appointment_select');
     const appointmentIdInput = document.getElementById('appointment_id');
     const appointmentDateInput = document.getElementById('appointment_date');
@@ -147,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const amountPaidInput = document.getElementById('amount_paid');
     const amountRemainingInput = document.getElementById('amount_remaining');
 
+     // When appointment is selected, populate the relevant fields
     appointmentSelect.addEventListener('change', function () {
         const selectedOption = this.selectedOptions[0];
         appointmentIdInput.value = selectedOption.dataset.appointmentId;
@@ -156,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
         dentistCodeInput.value = selectedOption.dataset.dentistCode;
         dentistNameInput.value = selectedOption.dataset.dentistName;
     });
-
+// Function to calculate grand total and remaining balance
     function calculateTotals() {
         const total = parseFloat(totalAmountInput.value || 0);
         const discount = parseFloat(discountInput.value || 0);
@@ -169,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
         grandTotalInput.value = grandTotal.toFixed(2);
         amountRemainingInput.value = remaining.toFixed(2);
     }
-
+ // Bind calculation to input changes
     totalAmountInput.addEventListener('input', calculateTotals);
     discountInput.addEventListener('input', calculateTotals);
     taxInput.addEventListener('input', calculateTotals);
