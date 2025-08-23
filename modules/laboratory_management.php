@@ -6,11 +6,11 @@ include '../includes/sidebar.php';
 
 
 // Include the database connection
-include '../config/db.php'; // Adjust the path to 'config' folder
+include '../config/db.php';  
 
 // Redirect if not logged in
 if (!isset($_SESSION['username'])) {
-    header("Location: ../auth/login.php");  // Adjusted to the new folder structure
+    header("Location: ../auth/login.php");   
     exit();
 }
 
@@ -20,8 +20,8 @@ $username = $_SESSION['username'];
 $sql = "SELECT Role, Fullname FROM users WHERE Username='$username'";
 $result = $conn->query($sql);
 $user = $result->fetch_assoc();
-$role = strtolower($user['Role']);  // Get the role (admin, receptionist, lab technician, dentist)
-$name = $user['Fullname'];  // Get the name of the user
+$role = strtolower($user['Role']);  
+$name = $user['Fullname'];   
 
 // Carousel modules visibility based on role
 $modules = [
@@ -72,8 +72,8 @@ background: linear-gradient(135deg,rgb(215, 237, 255),rgb(239, 247, 251),rgb(176
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            height: 200px; /* Fixed height for all cards */
-            width: 500px;  /* Fixed width for all cards */
+            height: 200px;  
+            width: 500px;   
             display: flex;
             flex-direction: column;
         }
@@ -93,11 +93,11 @@ background: linear-gradient(135deg,rgb(215, 237, 255),rgb(239, 247, 251),rgb(176
         }
         .card-text {
             color: #495057;
-            flex-grow: 1; /* Pushes button to bottom */
+            flex-grow: 1;  
         }
         .module-btn {
-            align-self: flex-start; /* Align button to bottom-left */
-            margin-top: auto; /* Push button to the bottom */
+            align-self: flex-start;  
+            margin-top: auto;  
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
@@ -154,9 +154,9 @@ background: linear-gradient(135deg,rgb(215, 237, 255),rgb(239, 247, 251),rgb(176
                     echo "<div class='card $colorClass'>"; 
                     echo "<div class='card-body'>";
                     echo "<h5 class='card-title'>$module</h5>";
-                    echo "<div class='mt-auto'>"; // New div to push button to bottom-left
+                    echo "<div class='mt-auto'>"; 
 
-                    // Add buttons or links to navigate to module pages (with updated paths)
+                    
                     switch ($module) {
                         case 'Test Request':
                             echo "<a href='../modules/lab_functions/test_request/test_request_management.php' class='btn btn-primary module-btn'>
@@ -176,11 +176,11 @@ background: linear-gradient(135deg,rgb(215, 237, 255),rgb(239, 247, 251),rgb(176
                             break;
                     }
 
-                    echo "</div>"; // Closing div for button placement
-                    echo '</div>'; // Closing div for card-body
-                    echo '</div>'; // Closing div for card
-                    echo '</div>'; // Closing div for col-md-4
-                    $colorIndex++; // Move to the next color
+                    echo "</div>";  
+                    echo '</div>'; 
+                    echo '</div>'; 
+                    echo '</div>';  
+                    $colorIndex++;  
                 }
             } else {
                 echo '<div class="col-12"><div class="card bg-light-blue"><div class="card-body"><h5 class="card-title">No Modules Available</h5><p>Your role does not have any modules assigned to it.</p></div></div></div>';

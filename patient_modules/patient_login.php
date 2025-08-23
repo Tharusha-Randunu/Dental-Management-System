@@ -7,7 +7,7 @@ $error_message = '';
 
 if (isset($_POST['login'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']); // Plain text password for now
+    $password = mysqli_real_escape_string($conn, $_POST['password']);  
 
     $sql = "SELECT * FROM patients WHERE Username='$username' AND Password='$password'";
     $result = $conn->query($sql);

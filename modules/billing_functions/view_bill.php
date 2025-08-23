@@ -6,8 +6,7 @@ $bill = null;
 $message = null;
 
 // Determine where the user came from
-$redirect_from = isset($_GET['from']) ? $_GET['from'] : 'billing_management'; // default fallback
-
+$redirect_from = isset($_GET['from']) ? $_GET['from'] : 'billing_management'; 
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $bill_id = intval($_GET['id']);
 

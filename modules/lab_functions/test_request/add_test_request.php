@@ -5,8 +5,8 @@ include '../../../config/db.php';
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $patient_nic = $_POST['patient_nic'];
-    $requested_by = $_POST['requested_by']; // NIC of dentist
-    $assigned_to = $_POST['assigned_to'];   // NIC of lab technician
+    $requested_by = $_POST['requested_by'];  
+    $assigned_to = $_POST['assigned_to'];    
     $test_type_id = $_POST['test_type_id'];
     $status = $_POST['status'];
     $result_availability = $_POST['result_availability'];

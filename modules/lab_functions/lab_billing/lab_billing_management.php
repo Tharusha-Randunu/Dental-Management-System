@@ -23,14 +23,13 @@ $result = $conn->query($sql);
     </div>
 
     <script>
-        // Wait for DOM to be ready
-        document.addEventListener("DOMContentLoaded", function() {
+         document.addEventListener("DOMContentLoaded", function() {
             setTimeout(function() {
                 var msg = document.getElementById("successMessage");
                 if (msg) {
                     msg.style.transition = "opacity 0.5s ease";
                     msg.style.opacity = 0;
-                    setTimeout(() => msg.remove(), 500); // remove element from DOM after fade
+                    setTimeout(() => msg.remove(), 500);  
                 }
             }, 3000); // 3 seconds
         });
@@ -43,14 +42,13 @@ $result = $conn->query($sql);
     </div>
 
     <script>
-        // Wait for DOM to be ready
-        document.addEventListener("DOMContentLoaded", function() {
+         document.addEventListener("DOMContentLoaded", function() {
             setTimeout(function() {
                 var msg = document.getElementById("successMessage");
                 if (msg) {
                     msg.style.transition = "opacity 0.5s ease";
                     msg.style.opacity = 0;
-                    setTimeout(() => msg.remove(), 500); // remove element from DOM after fade
+                    setTimeout(() => msg.remove(), 500);  
                 }
             }, 3000); // 3 seconds
         });

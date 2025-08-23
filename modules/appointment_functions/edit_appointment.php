@@ -2,7 +2,7 @@
 include '../../includes/header.php';
 include '../../config/db.php';
 
-$message = ""; // Initialize message variable
+$message = "";  
 
 // Fetch patients
 $patients_result = $conn->query("SELECT NIC, Fullname FROM patients");

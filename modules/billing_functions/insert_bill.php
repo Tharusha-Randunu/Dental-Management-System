@@ -5,7 +5,7 @@ include '../../config/db.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $appointment_id = $_POST['appointment_id'];
     $appointment_date = $_POST['appointment_date'];
-    $patient_nic = $_POST['patient_nic'];  // Note: not inserted in bills, can be removed here
+    $patient_nic = $_POST['patient_nic'];   
     $notes = $_POST['notes'];
     $total_amount = $_POST['total_amount'];
     $discount = $_POST['discount'];
@@ -37,11 +37,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $stmt->bind_param("issdddddds", $appointment_id, $appointment_date, $notes, $total_amount, $discount, $tax, $grand_total, $amount_paid, $amount_remaining, $payment_status);
 
     if ($stmt->execute()) {
-        // Success → Redirect with success flag
+        // Success  
         header("Location: ../billing_management.php?success=1");
         exit();
     } else {
-        // Failure → Redirect with error flag
+        // Failure  
         header("Location: add_bill.php?error=1");
         exit();
     }

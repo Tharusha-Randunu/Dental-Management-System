@@ -5,9 +5,10 @@ include '../config/db.php';
 
 $error_message = '';
 
+//login
 if (isset($_POST['login'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']); // Note: Consider hashing in production
+    $password = mysqli_real_escape_string($conn, $_POST['password']); 
 
     $sql = "SELECT * FROM users WHERE Username='$username' AND Password='$password'";
     $result = $conn->query($sql);

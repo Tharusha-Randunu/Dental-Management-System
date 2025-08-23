@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
-$username = "root"; // Default XAMPP MySQL username
-$password = ""; // Default XAMPP MySQL password is empty
-$dbname = "dental-mgt-system"; // Your database name
+$username = "root"; 
+$password = ""; 
+$dbname = "dental-mgt-system"; 
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

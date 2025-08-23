@@ -33,7 +33,7 @@ if (!isset($name) || !isset($role) || !isset($modules)) {
     .toggle-btn {
         position: fixed;
         top: 20px;
-        right: 20px; /* changed from left to right */
+        right: 20px;  
         font-size: 26px;
         color: #0d47a1;
         background-color: rgb(255, 255, 255);
@@ -53,19 +53,19 @@ if (!isset($name) || !isset($role) || !isset($modules)) {
     .sidebar {
         position: fixed;
         top: 0;
-        right: -260px; /* changed from left to right */
+        right: -260px; 
         width: 250px;
         height: 100%;
         background: #f0f9ff;
-        border-left: 2px solid #0d47a1; /* changed from border-right */
+        border-left: 2px solid #0d47a1;  
         padding: 25px 20px;
-        transition: right 0.3s ease; /* changed from left */
+        transition: right 0.3s ease;  
         z-index: 1050;
-        box-shadow: -4px 0 10px rgba(0,0,0,0.1); /* changed from 4px for left side */
+        box-shadow: -4px 0 10px rgba(0,0,0,0.1);  
     }
 
     .sidebar.active {
-        right: 0; /* changed from left: 0 */
+        right: 0;  
     }
 
     .sidebar-header {
@@ -207,5 +207,5 @@ if (!isset($name) || !isset($role) || !isset($modules)) {
 </script>
 
 <?php
-endif;  // end if user logged in check
+endif;   
 ?>

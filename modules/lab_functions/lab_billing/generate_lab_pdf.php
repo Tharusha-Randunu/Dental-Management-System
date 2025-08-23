@@ -1,5 +1,5 @@
 <?php
-require '../../../vendor/autoload.php'; // Adjust path if needed
+require '../../../vendor/autoload.php';  
 use Dompdf\Dompdf;
 use Dompdf\Options;
 include '../../../config/db.php';

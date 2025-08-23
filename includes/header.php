@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Get current script filename (without query string)
+
 $currentFile = basename($_SERVER['PHP_SELF']);
 
 // Define pages that don't require any login
@@ -66,9 +66,7 @@ if (!pathInArray($currentFile, $publicPages)) {
     } elseif (pathInArray($currentFile, $sharedPages)) {
         // Shared pages require either user OR patient login
         if (!$userLoggedIn && !$patientLoggedIn) {
-            // Redirect to whichever login page you want as default
-            // or redirect to a combined login page if you have one
-            header("Location: /Dental_System/auth/login.php");
+                        header("Location: /Dental_System/auth/login.php");
             exit();
         }
     } else {

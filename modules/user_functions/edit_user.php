@@ -4,7 +4,7 @@ include '../../config/db.php';
 
 $nic = $_GET['nic'];
 
-// Fetch user details (added Role and Profile_Picture columns)
+// Fetch user details  
 $sql = "SELECT NIC, user_code, Fullname, Address, Contact, Gender, Email, Username, Password, Role, Profile_Picture FROM users WHERE NIC = '$nic'";
 $result = $conn->query($sql);
 

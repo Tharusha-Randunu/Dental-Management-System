@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contact = $_POST['contact'];
     $email = $_POST['email'];
     $username = $_POST['username'];
-    $password = $_POST['password']; // no hashing
+    $password = $_POST['password'];  
 
     // Profile picture handling
     $profile_picture = null;

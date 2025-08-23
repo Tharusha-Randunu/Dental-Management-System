@@ -120,8 +120,7 @@ $checkStmt->close();
         $stmt->bind_param("sssssssss", $nic, $fullname, $address, $contact, $gender, $email, $username, $password, $profilePic);
 
         if ($stmt->execute()) {
-            // OLD MESSAGE CODE ADDED HERE
-            $message = "Patient added successfully.";
+             $message = "Patient added successfully.";
              echo "<script>
             setTimeout(function() {
                 window.location.href = '../patient_management.php';
@@ -139,7 +138,7 @@ $checkStmt->close();
     <div class="card shadow-lg p-4">
         <h2 class="text-center text-primary">Add New Patient</h2>
 
-        <!-- OLD MESSAGE DISPLAY -->
+        <!--  MESSAGE DISPLAY -->
         <?php if (isset($message)): ?>
             <div class="alert alert-info">
                 <?= htmlspecialchars($message) ?>

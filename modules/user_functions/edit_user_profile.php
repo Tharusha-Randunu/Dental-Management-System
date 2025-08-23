@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $contact = trim($_POST['contact']);
     $email = trim($_POST['email']);
     $new_username = trim($_POST['username']);
-    $password = trim($_POST['password']); // Plain text password from form
+    $password = trim($_POST['password']);  
 
     // Validation flags
     $valid = true;
@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors['email'] = "Invalid email format.";
         $valid = false;
     } else {
-        // Check uniqueness (excluding current user)
+        // Check uniqueness  
         $sql = "SELECT Username FROM users WHERE Email = ? AND Username != ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ss", $email, $username);
@@ -92,7 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors['username'] = "Username must be 6 to 15 characters.";
         $valid = false;
     } else {
-        // Check uniqueness (excluding current user)
+        // Check uniqueness  
         $sql = "SELECT Username FROM users WHERE Username = ? AND Username != ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ss", $new_username, $username);

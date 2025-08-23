@@ -38,7 +38,7 @@ if (isset($_SESSION['username'])) {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 4rem 3rem; /* increased padding */
+    padding: 4rem 3rem;  
   }
 
   .text-center {
@@ -47,15 +47,15 @@ if (isset($_SESSION['username'])) {
   }
 
   .text-center > h1 {
-    margin-bottom: 2rem; /* increased spacing below title */
+    margin-bottom: 2rem;  
   }
 
   .text-center > p {
-    margin-bottom: 3rem; /* increased spacing below subtitle */
+    margin-bottom: 3rem;  
   }
 
   .d-flex.gap-4.flex-wrap.justify-content-center {
-    gap: 2.5rem !important; /* increase gap between cards */
+    gap: 2.5rem !important;  
   }
 
   .card:hover {

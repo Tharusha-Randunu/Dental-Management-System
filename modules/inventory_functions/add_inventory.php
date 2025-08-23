@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $reorder_level = $_POST['reorder_level'];
     $unit_price = $_POST['unit_price'];
     $supplier_name = $_POST['supplier_name'];
-    $supplier_code = $_POST['supplier_code']; // Added supplier_code
+    $supplier_code = $_POST['supplier_code'];  
     $purchase_date = $_POST['purchase_date'];
     $expiry_date = $_POST['expiry_date'];
     $notes = $_POST['notes'];

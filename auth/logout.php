@@ -3,6 +3,7 @@
 include '../includes/header.php';
 ?>
 
+<!--logout-->
 <div class="container d-flex flex-column justify-content-center align-items-center vh-100">
     <div class="card p-4 text-center">
         <h2>Are you sure you want to log out?</h2>

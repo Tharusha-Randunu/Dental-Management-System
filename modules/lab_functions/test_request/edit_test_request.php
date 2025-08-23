@@ -77,8 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($update_stmt->execute()) {
         $message = "Test request updated successfully!";
-        // Refresh request data
-        header("Location: edit_test_request.php?id=$test_id&updated=1");
+         header("Location: edit_test_request.php?id=$test_id&updated=1");
         exit;
     } else {
         $message = "Error updating test request!";

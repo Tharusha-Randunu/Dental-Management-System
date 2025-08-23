@@ -28,7 +28,7 @@ $result = $conn->query($sql);
         </div>
         
 
-        <!-- Search Inputs -->
+         
         <!-- Search Filters -->
 <?php
 // Fetch distinct values for filters
@@ -158,19 +158,19 @@ $usernameOptions = $conn->query("SELECT DISTINCT Username FROM patients");
     $(document).ready(function () {
         // Search function
         $(".search-input").on("keyup change", function () {
-            var column = $(this).data("column"); // Get column index
+            var column = $(this).data("column");  
             var searchValue = $(this).val().toLowerCase().trim();
 
             $("#patientTable tbody tr").each(function () {
                 var cellText = $(this).find("td").eq(column).text().toLowerCase().trim();
 
-                if (column === 4) { // Gender column (Exact Match)
+                if (column === 4) {  
                     if (searchValue === "" || cellText === searchValue) {
                         $(this).show();
                     } else {
                         $(this).hide();
                     }
-                } else { // Other columns (Partial Match)
+                } else {  
                     $(this).toggle(cellText.includes(searchValue));
                 }
             });

@@ -10,7 +10,7 @@ $grand_total = $_POST['grand_total'];
 $amount_paid = $_POST['amount_paid'];
 $amount_remaining = $_POST['amount_remaining'];
 $payment_status = $_POST['payment_status'];
-$test_types = $_POST['test_types']; // Array of selected test_type_ids
+$test_types = $_POST['test_types'];   
 
 // Calculate amount_remaining
 $amount_remaining = $grand_total - $amount_paid;
@@ -19,15 +19,15 @@ $amount_remaining = $grand_total - $amount_paid;
 $conn->begin_transaction();
 
 try {
-    // Insert into lab_bills table (including amount_remaining)
+    // Insert into lab_bills table  
     $sql = "INSERT INTO lab_bills (patient_nic, total_amount, discount, tax, grand_total, amount_paid, amount_remaining, payment_status, created_at) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
     
-    // Prepare the statement and bind parameters (amount_remaining is calculated here)
+    // Prepare the statement and bind parameters  
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssddddss", $patient_nic, $total_amount, $discount, $tax, $grand_total, $amount_paid, $amount_remaining, $payment_status);
     $stmt->execute();
-    $bill_id = $stmt->insert_id; // Get the inserted bill ID
+    $bill_id = $stmt->insert_id;  
 
     // Insert selected test types into lab_bill_items table
     foreach ($test_types as $test_type_id) {

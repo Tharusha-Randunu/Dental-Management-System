@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $userRole = strtolower($_SESSION['role'] ?? '');
 $userNIC = $_SESSION['nic'] ?? '';
 
-error_log("Session NIC: " . $userNIC); // Debug line (optional, can remove in production)
+error_log("Session NIC: " . $userNIC);  
 
 $notifications = [];
 
@@ -295,7 +295,7 @@ foreach ($notifications as $notif) {
     const dropdown = document.getElementById('notificationDropdown');
     const btn = document.getElementById('notificationToggleBtn');
     dropdown.classList.toggle('active');
-    // Remove glow if dropdown is opened (user checked notifications)
+    // Remove glow if dropdown is opened  
     if (dropdown.classList.contains('active')) {
       btn.classList.remove('glow');
     }
@@ -308,7 +308,7 @@ foreach ($notifications as $notif) {
       notifElem.classList.add('read');
     }
 
-    // Save read notifications in localStorage to persist across reloads
+    // Save read notifications in localStorage  
     let readNotifs = JSON.parse(localStorage.getItem('readNotifications') || '[]');
     if (!readNotifs.includes(notifId)) {
       readNotifs.push(notifId);

@@ -37,7 +37,6 @@ $appt_stmt->close();
 
 // --- Fetch dental billing history ---
 $bills = [];
-// Note: bills link via appointment_id and appointment_date
 $bill_sql = "SELECT bill_id, appointment_id, appointment_date, notes, total_amount, discount, tax, grand_total, amount_paid, amount_remaining, payment_status, created_at 
              FROM bills WHERE appointment_id IN 
              (SELECT appointment_id FROM appointments WHERE patient_nic = ?) 
@@ -297,4 +296,4 @@ $lab_stmt->close();
 
 </div>
 
-<?php include '../../includes/footer.php';  // Corrected path to footer.php ?>
+<?php include '../../includes/footer.php';    ?>

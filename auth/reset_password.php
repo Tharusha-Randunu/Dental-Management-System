@@ -47,7 +47,7 @@ if (isset($_POST['reset_password'])) {
         $message = "<div class='alert alert-warning'>Password should be not be less tha 6 characters or more than 15 characters.</div>";
         $showForm = true;
     } else {
-        // Store plain-text password (NOT recommended)
+        
         $plain_password = $password;
 
         // Update password, clear reset token and expiry
